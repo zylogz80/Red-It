@@ -1,0 +1,10 @@
+{
+	"id": "com.adrew.redit",
+	"version": "1.0.0",
+	"vendor": "Adam R. Drew",
+	"type": "web",
+	"main": "index.html",
+	"title": "Red It",
+	"icon": "icons/red-it-nobg-64.png",
+	"uiRevision": 2
+}

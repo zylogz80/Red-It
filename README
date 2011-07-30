@@ -1,0 +1,88 @@
+Red It: A beautiful and functional Reddit browser for webOS tablets
+Copyright (C) 2011  Adam R. Drew adam@linkedlistcorruption.com
+
+About Red It:
+----------------------------------------------------------------------
+Red It is a Reddit browser for webOS tablets (and maybe eventually
+phones) that focuses on design, usability, and user experience. Red It
+is written in Enyo. 
+
+Red It is free software under the terms of the GPLv3. See the COPYING
+file for more information. While Red It is free software its 
+developer is not interested in collaborative development. Feature
+requests and bug reports are welcome (if you bought Red It from the 
+HP App Catalog) but commit access will not be granted to any additional 
+developers. If Adam ever gets sick of writing and mantaining Red It he 
+may turn it over to someone else or a group of others. Adam is not bound 
+by any agreement or under any obligation to implement your feature request 
+or fix what you consider a bug. If you don't like it, fork it.
+
+Red It has been made available as free software due to the developer's
+strong belief that people should have the opportunity to learn for each other's
+work, that the webOS platform will only grow if people develop for it,
+and that the application should be able to "live on" even after the 
+primary developer loses interest in it. That said the developer does
+expect that people interested in using Red It purchase the app from
+the App Catalog. Red It is available as source for philosophical and educational 
+purposes only; it is not considered by the developer to be a primary distribution
+vehicle for the software. If you are downloading the code and installing it
+just to get around paying the almost insignificant amount of money
+the developer is asking then you are a scum bag. Feature requests, support,
+and bug fixes will only be available to paying customers. 
+
+Installing Red It:
+----------------------------------------------------------------------
+Download it from the HP App Catalog! Red It represents 
+the culmination of countless hours of development work by a single 
+developer. There's no defensible reason to not go and pay the pittance
+he's asking for it in return. 
+
+However, if you are in a country where the App Catalog does not accept
+payment, if you are downloading Red It to learn and understand Enyo, if 
+you want to fork Red It, or you want to incorporate Red It code into your own app
+then follow these instructions:
+
+1. Install the webOS SDK:
+https://developer.palm.com/content/resources/develop/sdk_pdk_download.html
+
+2. Put your device into developer mode
+- Click on the "Just Type" bar
+- Enter upupdowndownleftrightleftrightbastart into the "Just Type" bar
+- Click the "Developer Mode" icon that appears
+
+3. USB tether your device to your computer
+
+4. Run the included makeinstall.sh script
+
+The app should now appear in the app launcher. You can use the two included
+log scripts to view error and debug logs. These are simple 1 or 2 line scripts
+made out of laziness. Feel free to use them or not.
+
+Questions, help, or comments:
+----------------------------------------------------------------------
+If you are part of the beta program or if you paid for Red It please
+feel free to email Adam at adam@linkedlistcorruption.com with any issues, questions,
+feature requests, or just to say "hi." Adam will do anything he can to
+accomodate your requests if it is feasible and fits the development road 
+map. If your feature or bug can't be addressed Adam will explain why.
+
+If you aren't part of the beta program and/or didn't buy the app you can 
+pound sand and echo your requests to /dev/null; Adam doesn't care.
+
+Thanks:
+----------------------------------------------------------------------
+HP and Palm for keeping on with a really incredible and promising platform
+that makes development more accessible than I've ever dreamed possible.
+
+Everyone on #webos on Freenode who helped me and answered my questions. 
+
+Everyone on /r/palm on Reddit who was interested in my app.
+
+Everyone who buys Red It.
+
+My wife for putting up with marathon coding sessions when there was house work
+to do.
+
+My dog for keeping me company while coding. 
+
+

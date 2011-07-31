@@ -274,6 +274,7 @@ enyo.kind({
 		this.isLoggedIn = true; 
 		this.$.RightPane.setIsLoggedIn(true);
 		this.$.LeftPane.setIsLoggedIn(true);
+		this.$.LeftPane.setUserModHash(this.userStruct.modHash);
 		this.$.LeftPane.$.newPostButton.setDisabled(false);
 	},
 	openLoginPopup: function() {
@@ -329,9 +330,7 @@ enyo.kind({
 		//TODO
 
 		this.$.LeftPane.setCurrentSubreddit(this.$.headerInputBox.getValue());
-		this.$.LeftPane.$.headerTopTab.setDepressed(true);
-		this.$.LeftPane.$.headerNewTab.setDepressed(false);
-		this.$.LeftPane.refreshStoryList();
+
 	},
 	savePrefs: function() {
 		//Send the contents of the preferences struct to the prefsHandler for storage in the cookie

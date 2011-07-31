@@ -23,7 +23,8 @@ enyo.kind({
 	kind: enyo.Control,
 	style: "background-image: url('icons/dark-gray-texture.png')",
 	published: {
-		isLoggedIn: false
+		isLoggedIn: false,
+		userModHash: ""
 	},
 	components: [
 		{kind: "Header", name: "commentsHeader", style: "width: 100%", components: [
@@ -41,13 +42,14 @@ enyo.kind({
 			{name: "commentList", kind: enyo.VirtualList, tapHighlight: true, onSetupRow: "getListItem", components: [
 				//{kind: enyo.Item,  name: "commentItem", layoutKind: enyo.HFlexLayout, tapHighlight: true, align: "center", components:[
 					//424242
-					{kind: enyo.SwipeableItem, name: "commentItem", onclick: "clickedOnItem", style: "background-image: url('icons/gray-texture.png')",confirmCaption: enyo._$L("Up Vote"), cancelCaption: enyo._$L("Down Vote"), components: [
+					{kind: enyo.SwipeableItem, name: "commentItem", onclick: "clickedOnItem", style: "background-image: url('icons/gray-texture.png')",confirmCaption: enyo._$L("Up Vote"), onConfirm: "commentUpVote", onCancel: "commentDownVote",cancelCaption: enyo._$L("Down Vote"), components: [
 
 						{kind: enyo.RowGroup, name: "commentRowGroup", style: "width: 95%; margin-right: 6px;", components: [	
 						
 							{kind: enyo.VFlexBox, components: [
 
 								{kind: enyo.HtmlContent, name: "commentText",style: "color: white;font-size: 14px"},
+								{name: "storyVoteStatus"}
 								//{kind: enyo.HFlexBox, pack: "center", components: [ 
 									//{kind: enyo.Button, caption: "Options", style: "font-size: 12px; text-align: left; color: #8A8A8A", onclick: "showOptions"}
 								
@@ -73,7 +75,35 @@ enyo.kind({
 			{name: "optionUpVote", caption: "Up Vote", onclick: "sendMessage"},
 			{name: "optionDownVote", caption: "Down Vote", onclick: "sendMessage"},
 		]},	
+		
+		{kind: "readIT.RedditAPI", name: "redditVoteService", onPostDataComplete: "voteComplete"},
+
+
 	],
+	
+	commentUpVote: function(inSender, inIndex) {
+		
+		commentID = this.commentResults[inIndex].data.name;
+		
+		
+		this.$.redditVoteService.submitVote(commentID, "1", this.userModHash);
+		
+	},
+	commentDownVote: function(inSender, inIndex) {
+		
+		commentID = this.commentResults[inIndex].data.name;
+		
+		
+		this.$.redditVoteService.submitVote(commentID, "-1", this.userModHash);		
+		
+	},
+	
+	voteComplete: function() {
+		
+		this.$.commentList.refresh();
+		
+	},
+	
 	clickedOnItem: function(inSender, inEvent) {
 
 
@@ -215,12 +245,20 @@ enyo.kind({
 		var count = this.commentResults[inIndex];
 		// If the count is > 0
 		if (count) {
-			enyo.log("FUCKYA");
-			// If the story has a thumbnail then display it
 			var score = parseInt(count.data.ups) - parseInt(count.data.downs);
 			this.$.commentRowGroup.setCaption("Comment by: " + count.data.author + ", Score: " + score);
 			this.$.commentText.setContent(count.data.body);//count.data.body);
 			// Returning true is how the item list knows to keep iterating
+			if ( count.data.likes == true) {
+				// thing to do if upvoted
+				this.$.storyVoteStatus.setStyle("color: #FCA044; font-size: 12px");
+				this.$.storyVoteStatus.setContent("You upvoted!")
+			}
+			if (count.data.likes == false) {
+				//thing to do if downvoted
+				this.$.storyVoteStatus.setStyle("color: #5797FF; font-size: 12px");
+				this.$.storyVoteStatus.setContent("You downvoted!");
+			}
 			return true;
 		} 
 	}

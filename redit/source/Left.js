@@ -25,7 +25,8 @@ enyo.kind({
 	published: {
 		isLoggedIn: false,
 		currentSubreddit: "",
-		hotSelected: ""
+		hotSelected: "",
+		userModHash: ""
 	},
 	events: {
 		onNewPostPressed: "",
@@ -89,38 +90,28 @@ enyo.kind({
 		this.$.getStories.call();
 	},
 
-	refreshStoryList: function(inValue) {
+	refreshStoryList: function() {
 		this.selectedRow = false;
-		if ( !inValue ) {
-			inValue = "nothing";
-		}
-		enyo.log("DEBUG: Entered refresh story list")
-		enyo.log("DEBUG: inValue is : " + inValue);
-		// Go button was pressed. Set the URL for the web service and then call the service
-		switch (inValue) {
-			case "nothing": 
-				this.$.getStories.setUrl("http://reddit.com/.json");
-				break;
-			case "new":
-				if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/new.json?sort=new");}
-				if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new");}
-				break;
-			default:
-				this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json");
-				break;
-		}
 		this.$.getStories.call();
 		
 	},
 	
 	selectHotStories: function() {
+		if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json");}
+		if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/.json");}
 		this.refreshStoryList();
 		this.$.headerNewTab.setDepressed(false);
+		this.$.headerTopTab.setDepressed(true);
+
 
 	},
 	selectNewStories: function() {
-		this.refreshStoryList("new");
+		if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/new.json?sort=new");}
+		if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new");}
+		this.refreshStoryList();
 		this.$.headerTopTab.setDepressed(false);
+		this.$.headerNewTab.setDepressed(true);
+
 	},
 	
 	getStoriesSuccess: function(inSender, inResponse) {
@@ -183,9 +174,17 @@ enyo.kind({
 		storyStruct.comments = this.rssResults[inEvent.rowIndex].data.num_comments;
 		
 		//After the struct is populated pass it to the right pane
+		this.owner.$.RightPane.setUserModHash(this.userModHash);
 		this.owner.$.RightPane.acceptStoryFromLeftPane(storyStruct);
 
 		},
+
+	setCurrentSubreddit: function(inSubreddit) {
+		
+		this.currentSubreddit = inSubreddit;
+		this.selectHotStories();
+		
+	},
 
 	getListItem: function(inSender, inIndex){
 		// This function gets automatically called with the VirtualRepeater gets rendered

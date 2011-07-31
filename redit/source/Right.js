@@ -38,7 +38,8 @@ enyo.kind({
 			reddit: "",
 			likes: "",
 			id : "" },
-		isLoggedIn: false
+		isLoggedIn: false,
+		userModHash: ""
 	
 	},
 	components: [
@@ -168,6 +169,7 @@ enyo.kind({
 		this.updateStoryUI();
 		enyo.log("DEBUG: Parent ID : " + this.storyStruct.id.slice(3));
 		this.$.commentView.getCommentsForParent(this.storyStruct.id.slice(3));
+		this.$.commentView.setUserModHash(this.userModHash);
 		
 
 

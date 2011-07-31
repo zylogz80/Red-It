@@ -99,7 +99,7 @@ enyo.kind({
 	},
 	
 	voteComplete: function() {
-		
+		enyo.log
 		this.$.commentList.refresh();
 		
 	},

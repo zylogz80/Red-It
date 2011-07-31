@@ -53,6 +53,9 @@ enyo.kind({
 	},
 	components: [
 
+
+
+
 		{kind: enyo.PageHeader, className: "enyo-header-dark", components: [
 			// Main app header
 			// This contains the Red It logo, the go button, the subreddit bar, and the login/user button

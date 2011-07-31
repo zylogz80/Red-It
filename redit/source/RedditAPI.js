@@ -82,13 +82,15 @@ enyo.kind({
 			method: "POST",
 			name: "loginWebService", 
 			onSuccess:"loginSuccess", 
-			onFailure:"webServiceFailure"
+			onFailure:"webServiceFailure",
+			timeout: "30000"
 		},
 		{kind: enyo.WebService, 
 			// This service gets the user's information
 			// we get a lot from this, including the modhash.
 			url: "http://www.reddit.com/api/me.json", 
 			method: "GET",
+			timeout: "30000",
 			name: "myUserDataWebService", 
 			onSuccess:"myUserDataSuccess", 
 			onFailure:"webServiceFailure"
@@ -97,7 +99,8 @@ enyo.kind({
 			// This service is used to vote on stories
 			url: "http://www.reddit.com/api/vote", 
 			method: "POST",
-			name: "voteWebService", 
+			name: "voteWebService",
+			timeout: "30000", 
 			onSuccess:"postSuccess", 
 			onFailure:"webServiceFailure"
 		},
@@ -105,6 +108,7 @@ enyo.kind({
 			// This service is used to submit new stories
 			url: "http://www.reddit.com/api/submit", 
 			method: "POST",
+			timeout: "30000",
 			name: "postWebService", 
 			onSuccess:"submitSuccess", 
 			onFailure:"webServiceFailure"
@@ -114,6 +118,7 @@ enyo.kind({
 			// Requires the name of the user
 			url: "http://www.reddit.com/user/about.json", 
 			method: "GET",
+			timeout: "30000",
 			name: "otherUserWebService", 
 			onSuccess:"otherUserDataSuccess", 
 			onFailure:"webServiceFailure"
@@ -122,11 +127,18 @@ enyo.kind({
 			// This service is used to comment
 			url: "http://www.reddit.com/api/reply", 
 			method: "POST",
+			timeout: "30000",
 			name: "replyWebService", 
 			onSuccess:"postSuccess", 
 			onFailure:"webServiceFailure"
-		}
+		},
+		{kind: "errorPopup", name: "errorPopup"},
 	],	
+	webServiceFailure: function() {
+		enyo.log("DEBUG: Something failed");
+		this.$.errorPopup.openAtCenter();
+		
+	},
 	submitVote: function(thingID, upOrDown, userModHash) {
 		// Vote on a story or comment
 		this.$.voteWebService.call({id: thingID, dir: upOrDown, uh: userModHash});

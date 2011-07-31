@@ -24,5 +24,6 @@ enyo.depends(
 	"source/Right.js",
 	"source/RedditAPI.js",
 	"source/PrefHandler.js",
-	"source/CommentView.js"
+	"source/CommentView.js",
+	"source/errorPopup.js"
 	);

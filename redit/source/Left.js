@@ -32,6 +32,10 @@ enyo.kind({
 		onSelectedStory: ""
 	},
 	components: [
+	
+		{kind: "errorPopup", name: "errorPopup"},
+		
+		
 		{kind: enyo.TabGroup, components: [
 			{name: "headerTopTab", caption: "Hot Stories", onclick: "selectHotStories"},
 			{name: "headerNewTab", caption: "Newest Stories", onclick: "selectNewStories"}
@@ -67,7 +71,8 @@ enyo.kind({
 		{kind: enyo.WebService, 
 			url: "http://reddit.com/.json", 
 			name: "getStories", 
-			onSuccess:"getStoriesSuccess", 
+			onSuccess:"getStoriesSuccess",
+			timeout: "30000", 
 			onFailure:"getStoriesFail"
 		}
 	],
@@ -86,11 +91,15 @@ enyo.kind({
 
 	refreshStoryList: function(inValue) {
 		this.selectedRow = false;
-	
+		if ( !inValue ) {
+			inValue = "nothing";
+		}
+		enyo.log("DEBUG: Entered refresh story list")
+		enyo.log("DEBUG: inValue is : " + inValue);
 		// Go button was pressed. Set the URL for the web service and then call the service
 		switch (inValue) {
-			case "": 
-				this.$.getStories.setUrl("http://reddit.com/r/frontpage.json");
+			case "nothing": 
+				this.$.getStories.setUrl("http://reddit.com/.json");
 				break;
 			case "new":
 				if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/new.json?sort=new");}
@@ -123,7 +132,9 @@ enyo.kind({
 	},
 	getStoriesFail: function(){
 		// Getting the stories failed for some reason
-		this.$.theButton.setCaption("Getting stories failed");
+		enyo.log("DEBUG: Getting stories failed!!!??? What?");
+		this.$.errorPopup.openAtCenter();
+		//this.$.theButton.setCaption("Getting stories failed");
 	},
 	newPost: function() {
 		this.doNewPostPressed();

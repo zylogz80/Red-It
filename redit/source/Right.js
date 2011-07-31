@@ -66,8 +66,7 @@ enyo.kind({
 				{name:"footerDownButton",caption: "Down", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "doDownVote", depressed: false}
 			]},
 			
-			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "shareButton", disabled: "true", caption: "Share", onclick: "shareMenuShow"},
-			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "commentButton", disabled: "true", showing: "false",caption: "Comment", onclick: "showCommentBox"}
+			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "shareButton", disabled: "true", caption: "Share", onclick: "shareMenuShow"}
 			
 			]},
 		{kind: enyo.Menu, name: "shareMenu", components: [
@@ -112,7 +111,7 @@ enyo.kind({
 		this.$.footerUpButton.setShowing(true);
 		this.$.footerDownButton.setShowing(true);
 		this.$.shareButton.setShowing(true);
-		this.$.commentButton.setShowing(false);
+		//this.$.commentButton.setShowing(false);
 		enyo.log("DEBUG: Showing story");
 		this.$.paneControl.selectViewByName("webViewer");	
 	},
@@ -120,7 +119,7 @@ enyo.kind({
 		this.$.footerUpButton.setShowing(false);
 		this.$.footerDownButton.setShowing(false);
 		this.$.shareButton.setShowing(false);
-		this.$.commentButton.setShowing(true);
+		//this.$.commentButton.setShowing(true);
 		enyo.log("DEBUG: Showing comments");
 		this.$.paneControl.selectViewByName("commentView");	
 	},
@@ -128,7 +127,7 @@ enyo.kind({
 		
 		this.inherited(arguments);
 		
-		this.$.commentButton.setShowing(false);
+		//this.$.commentButton.setShowing(false);
 
 		this.$.paneControl.selectViewByName("webViewer");
 		
@@ -162,7 +161,7 @@ enyo.kind({
 		if ( this.isLoggedIn = true ) {
 			this.$.footerUpButton.setDisabled(false);
 			this.$.footerDownButton.setDisabled(false);
-			this.$.commentButton.setDisabled(false);
+			//this.$.commentButton.setDisabled(false);
 		}
 
 		//Update the visual representation of the story

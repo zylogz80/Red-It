@@ -44,14 +44,18 @@ enyo.kind({
 	components: [
 
 		{kind: enyo.TabGroup, components: [
-			{name: "headerStoryTab", caption: "View Story", disabled: "true", onclick: "showStory"},
-			{name: "headerCommentsTab", caption: "View Comments",  disabled: "true",onclick: "showComments"}
+			{kind:enyo.TabButton, name: "headerStoryTab", caption: "View Story", disabled: "true", onclick: "showStory"},
+			{kind:enyo.TabButton, name: "headerCommentsTab", caption: "View Comments",  disabled: "true", onclick: "showComments"}
 		]},
 
-		{kind: enyo.Pane, name: "paneControl", flex: 1, transitionKind: "enyo.transitions.LeftRightFlyin", components: [
-			{kind: "readIT.commentView", name: "commentView"},
+		{kind: enyo.Pane, name: "paneControl", flex: 1, components: [
+			{kind: enyo.WebView, name: "webViewer", url: "http://linkedlistcorruption.com/redit/welcome.html"},
+			//{kind: enyo.WebView, name: "commentView", url: "http://reddit.com"},
 
-			{kind: enyo.WebView, name: "webViewer", url: "http://linkedlistcorruption.com/redit/welcome.html"}
+
+			{kind: "readIT.commentView", name: "commentView"}
+
+
 		]},
 
 		{kind: enyo.Toolbar, pack: "center", align: "center",components: [             
@@ -63,6 +67,7 @@ enyo.kind({
 			]},
 			
 			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "shareButton", disabled: "true", caption: "Share", onclick: "shareMenuShow"},
+			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "commentButton", disabled: "true", showing: "false",caption: "Comment", onclick: "showCommentBox"}
 			
 			]},
 		{kind: enyo.Menu, name: "shareMenu", components: [
@@ -104,14 +109,28 @@ enyo.kind({
 		this.$.shareMenu.openAtControl(this.$.shareButton);
 	},
 	showStory: function(){
+		this.$.footerUpButton.setShowing(true);
+		this.$.footerDownButton.setShowing(true);
+		this.$.shareButton.setShowing(true);
+		this.$.commentButton.setShowing(false);
+		enyo.log("DEBUG: Showing story");
 		this.$.paneControl.selectViewByName("webViewer");	
 	},
 	showComments: function() {
+		this.$.footerUpButton.setShowing(false);
+		this.$.footerDownButton.setShowing(false);
+		this.$.shareButton.setShowing(false);
+		this.$.commentButton.setShowing(true);
+		enyo.log("DEBUG: Showing comments");
 		this.$.paneControl.selectViewByName("commentView");	
 	},
 	create: function() {
 		
 		this.inherited(arguments);
+		
+		this.$.commentButton.setShowing(false);
+
+		this.$.paneControl.selectViewByName("webViewer");
 		
 		this.$.webViewer.clearCache();
 		
@@ -143,10 +162,13 @@ enyo.kind({
 		if ( this.isLoggedIn = true ) {
 			this.$.footerUpButton.setDisabled(false);
 			this.$.footerDownButton.setDisabled(false);
+			this.$.commentButton.setDisabled(false);
 		}
 
 		//Update the visual representation of the story
 		this.updateStoryUI();
+		enyo.log("DEBUG: Parent ID : " + this.storyStruct.id.slice(3));
+		this.$.commentView.getCommentsForParent(this.storyStruct.id.slice(3));
 		
 
 

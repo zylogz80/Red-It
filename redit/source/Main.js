@@ -59,18 +59,22 @@ enyo.kind({
 		{kind: enyo.PageHeader, className: "enyo-header-dark", components: [
 			// Main app header
 			// This contains the Red It logo, the go button, the subreddit bar, and the login/user button
-			{kind: enyo.Image, src: "icons/red-it-nobg-48.png", style: "padding-right: 10px;"},
+			{kind: enyo.Image, src: "icons/beta-red-it-nobg-48.png", style: "padding-right: 10px;"},
 			{kind: enyo.Spacer},
+			{kind: enyo.Spinner, name: "headerSpinner", showing: "false"},
 			{kind: enyo.ToolButton, caption: "Go", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "subredditSubmit"},
 			{kind: enyo.ToolInput, name: "headerInputBox", hint: "Enter subreddit name", style: "width: 400px"},
+			{kind: enyo.ToolButton, caption: "Bug Report", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "submitBug"},
+			{kind: enyo.ToolButton, caption: "Submit Feedback", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "submitFeedback"},
+
 			{kind: enyo.Spacer},
 			{name: "headerLoginButton", kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", caption: "Login", onclick: "openLoginPopup"}
 		]},
 
 		{kind: enyo.SlidingPane, flex: 1, components: [
 			//Sliding panes
-			{name: "LeftPane", style: "width: 400px", kind: "readIT.leftView", onSelectedStory: "selectedStory", onNewPostPressed: "showNewPostBox"},
-			{name: "RightPane", flex: 2,kind: "readIT.rightView", 	onResize: "resizeWebView", onUpVote: "upVote", onDownVote: "downVote"},
+			{name: "LeftPane", style: "width: 400px", kind: "readIT.leftView", onSelectedStory: "selectedStory", onNewPostPressed: "showNewPostBox", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
+			{name: "RightPane", flex: 2,kind: "readIT.rightView", 	onResize: "resizeWebView", onUpVote: "upVote", onDownVote: "downVote", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
 		]},
 
 		//Reddit API services
@@ -135,9 +139,22 @@ enyo.kind({
 				]}				
 			
 			]}
-		]}
+		]},
+		
+		
+		{name: "emailService", 		kind: "PalmService", 
+									service: "palm://com.palm.applicationManager/", 
+									method: "open", 
+		}
 	],
 
+	showHeaderSpinner: function() {
+		this.$.headerSpinner.setShowing(true);
+	},
+	hideHeaderSpinner: function() {
+		this.$.headerSpinner.setShowing(false);
+	
+	},
 	create: function() {
 		//The create function
 		//We use this to define some private variables
@@ -211,7 +228,7 @@ enyo.kind({
 
 	showNewPostBox: function() {
 		//Show the scrim and the new post box
-		this.$.spinScrim.show()
+		this.$.spinScrim.show();
 		this.$.newPostPopup.openAtCenter();
 	},
 
@@ -260,6 +277,33 @@ enyo.kind({
 		var password= this.prefsStruct.password; 
 		this.$.redditLoginService.submitLogin(userName, password); 
 	},
+	
+	submitBug: function() {
+				var params =  {
+			        "recipients":[{"type": "email",
+            "contactDisplay":"Red It Bugs",
+            "role":1,
+            "value":"reditbugs@linkedlistcorruption.com"}],		
+			"summary":"Red It Beta Bug Report",
+			"text": "Thank you for electing to submit a bug report for the Red It Beta. Please fill the following fields out as accurately and completely as possible. Please Note: This form should only be used for bug reports, not for feature requests or general feedback. Bugs are mistakes or errors in already implemented functionality of Red It. If you'd like to request a feature or provide general feedback please use the 'Send Feedback' button instead. Thanks very much. <br><br>What anomolous behavior did you observe?<br>-------------------------------------------------------------------------<br><br><br>Why do you think this is a bug?<br>-------------------------------------------------------------------------<br><br><br>What steps would need to be taken to reproduce this issue?<br>-------------------------------------------------------------------------<br><br><br>What were you doing when the problem occured?<br>-------------------------------------------------------------------------<br><br><br>Have you observed this multiple times? If so, how many times have you observed it?<br>-------------------------------------------------------------------------<br><br><br>Is there any other information that may be helpful in identifying and resolving this issue?<br>-------------------------------------------------------------------------<br><br><br>Can Adam Drew, Red It's developer, contact you if there are further questions about this bug?<br>-------------------------------------------------------------------------<br><br><br>Thanks again for submitting a bug report during the Red It Beta!<br>-Adam"
+		};
+		this.$.emailService.call({"id": "com.palm.app.email", "params":params});
+		
+	},
+	
+	submitFeedback: function() {
+				var params =  {
+			        "recipients":[{"type": "email",
+            "contactDisplay":"Red It Feedback",
+            "role":1,
+            "value":"reditfeedback@linkedlistcorruption.com"}],		
+			"summary":"Red It Beta Feedback",
+			"text": "Thank you for electing to send feedback for the Red It Beta. Whatever you've got to say, we'd like to hear it. Please Note: This form should be used for general feedback, not bug reports. If you've encountered something you think is a bug please use the 'Bug Report' button instead. Thanks in advance.<br><br>My Feedback<br>------------------------------------------------------------------<br><br><br><br>Do you give Adam, Red It's developer, permission to contact you regarding your feedback?<br>------------------------------------------------------------------<br><br><br><br>"
+		};
+		this.$.emailService.call({"id": "com.palm.app.email", "params":params});
+		
+	},
+	
 	loginComplete: function () {
 		//Handles login completion
 		//redditLoginService calls this function on success
@@ -328,8 +372,10 @@ enyo.kind({
 		//TODO
 		//TODO: all of this could be handled in a single function in leftPane that we just pass the subreddit name to
 		//TODO
-
+		this.showHeaderSpinner();
 		this.$.LeftPane.setCurrentSubreddit(this.$.headerInputBox.getValue());
+		this.$.LeftPane.$.uiList.punt();
+
 
 	},
 	savePrefs: function() {

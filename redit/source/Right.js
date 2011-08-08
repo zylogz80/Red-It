@@ -26,7 +26,9 @@ enyo.kind({
 	dragAnywhere: false,
 	events: {
 		onUpVote:"",
-		onDownVote: ""
+		onDownVote: "",
+		onCompleteDataLoad: "",
+		onStartDataLoad: ""
 	},
 	published: {
 		storyStruct: {
@@ -50,7 +52,7 @@ enyo.kind({
 		]},
 
 		{kind: enyo.Pane, name: "paneControl", flex: 1, components: [
-			{kind: enyo.WebView, name: "webViewer", url: "http://linkedlistcorruption.com/redit/welcome.html"},
+			{kind: enyo.WebView, name: "webViewer", onLoadComplete: "doCompleteDataLoad", url: "http://linkedlistcorruption.com/redit/welcome.html"},
 			//{kind: enyo.WebView, name: "commentView", url: "http://reddit.com"},
 
 
@@ -95,13 +97,10 @@ enyo.kind({
 	sendMessage : function(inSender, inResponse) {
 
     var  params =  {
-        "composeRecipients" : 
-        {
-            "address"     : "9193895334",
-            
-         },
-        "messageText"     : "Title: '"+this.storyStruct.title+"' URL: " +this.storyStruct.url+"" 
-	};  
+		"params" : {
+			"text"     : "Found this on Reddit: " + this.storyStruct.url,
+		}
+	}  
 		this.$.messagingService.call({"id": "com.palm.app.messaging", "params":params});
 	},
 	shareMenuShow: function() {

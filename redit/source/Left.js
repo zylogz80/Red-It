@@ -30,7 +30,9 @@ enyo.kind({
 	},
 	events: {
 		onNewPostPressed: "",
-		onSelectedStory: ""
+		onSelectedStory: "",
+		onCompleteDataLoad: "",
+		onStartDataLoad: ""
 	},
 	components: [
 	
@@ -97,15 +99,18 @@ enyo.kind({
 	},
 	
 	selectHotStories: function() {
+		this.doStartDataLoad();
 		if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json");}
 		if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/.json");}
 		this.refreshStoryList();
 		this.$.headerNewTab.setDepressed(false);
 		this.$.headerTopTab.setDepressed(true);
+		
 
 
 	},
 	selectNewStories: function() {
+		this.doStartDataLoad();
 		if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/new.json?sort=new");}
 		if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new");}
 		this.refreshStoryList();
@@ -119,7 +124,11 @@ enyo.kind({
 		this.rssResults = inResponse.data.children;
 		// Re-render the item list to fill it with the rss results
 		this.$.uiList.refresh();
-		this.$.uiList.punt();
+		//this.$.uiList.punt();
+		
+		//This event gets fired so that the main pane can stop the loading spinner
+		//when we're loading a new subreddit. It's not trapped otherwise.
+		this.doCompleteDataLoad();
 	},
 	getStoriesFail: function(){
 		// Getting the stories failed for some reason
@@ -132,6 +141,9 @@ enyo.kind({
 	},
 	sendStoryToRightPane: function(inSender, inEvent) {
 		// The user has selected a story. We need to push the story to the right pane for display.
+
+		
+		this.doStartDataLoad();
 
 		this.selectedRow = inEvent.rowIndex;
 		

@@ -175,7 +175,7 @@ enyo.kind({
 			this.noStory = false;
 		} 	else {
 			this.noStory = true;
-			enyo.log("DEBUG: No stories bitch");
+			enyo.log("DEBUG: getCommentsSuccess: set noStory = true");
 		}
 		
 		
@@ -219,7 +219,7 @@ enyo.kind({
 			this.noStory = false;
 		} 	else {
 			this.noStory = true;
-			enyo.log("DEBUG: No stories bitch");
+			enyo.log("DEBUG: getCommentRepliesSuccess: set noStory = true");
 		}
 			
 		//
@@ -237,14 +237,17 @@ enyo.kind({
 		// This function gets automatically called with the VirtualRepeater gets rendered
 		// Get the count of the all the RSS items resurned
 		if (this.noStory == true) {
+			enyo.log("DEBUG: getListItem: noStore == true was trapped");
+			this.$.commentItem.setSwipeable(false);
 			this.$.commentRowGroup.setCaption("No comments found!");
 			this.$.commentText.setContent("There are no comments on this yet. Why don't you add one? Or not. Whatever.");
 			this.noStory = false;
+			this.commentResults = [];
 			return true;
 		}
 		var count = this.commentResults[inIndex];
 		// If the count is > 0
-		if (count) {
+		if (count && this.noStory == false) {
 			var score = parseInt(count.data.ups) - parseInt(count.data.downs);
 			this.$.commentRowGroup.setCaption("Comment by: " + count.data.author + ", Score: " + score);
 			this.$.commentText.setContent(count.data.body);//count.data.body);

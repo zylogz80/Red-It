@@ -28,7 +28,6 @@ enyo.kind({
 		{kind: enyo.HFlexBox, align: "center", name: "theBox" , components: [	
 			{kind: enyo.Image, src: "icons/exclaim.png"},
 			{content: "Uh oh! I can't talk to Reddit! Is Reddit down?"}, 
-			{content: "Do you have no internet connection? Are you behind a firewall or proxy?"},
 			{content: "Sorry!:("},
 			{content: "Error Code: STUFFSBROKE"}
 		]}

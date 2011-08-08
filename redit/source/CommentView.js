@@ -35,6 +35,7 @@ enyo.kind({
 				{name: "headerText", content: "Loading...", style: "font-size: 16px"}
 			]},
 			{kind: enyo.Spacer},
+			{kind: "Button", caption: "Back", disabled: "true", name: "backButton", onclick: "backButtonPressed"},
 			{kind: "Button", caption: "Comment"}
 		]},
 		{kind: enyo.FadeScroller, flex: 1, components: [ 
@@ -107,12 +108,18 @@ enyo.kind({
 	clickedOnItem: function(inSender, inEvent) {
 
 
-		
-		enyo.log("http://www.reddit.com/"+this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3)+".json");
+		this.$.backButton.setDisabled(false);
 		
 		this.$.loadingSpinnger.setShowing(true);
 		this.$.headerText.setContent("Loading...");
 		this.$.commentList.setShowing(false);
+		
+		
+		this.commentParent.commentID = this.commentResults[inEvent.rowIndex].data.name.slice(3);
+		this.commentParent.permaLink = this.permaLink;
+		
+		enyo.log("DEBUG: this.commentParent.commentID = " + this.commentParent.commentID);
+		enyo.log("DEBUG: this.commentParent.permaLink = " + this.commentParent.permaLink);
 		
 		this.$.getCommentReplies.setUrl("http://www.reddit.com/"+this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3)+".json");
 		this.$.getCommentReplies.call();
@@ -122,6 +129,14 @@ enyo.kind({
 		} else {
 			this.$.headerText.setContent(this.commentResults[inEvent.rowIndex].data.body);
 		}
+		
+	},
+	
+	backButtonPressed: function() {
+		
+		this.$.getCommentReplies.setUrl("http://www.reddit.com/"+this.commentParent.permaLink+this.commentParent.commentID +".json");
+		this.$.getCommentReplies.call();
+
 		
 	},
 	
@@ -145,7 +160,11 @@ enyo.kind({
 		this.permaLink = "";
 		
 		//Store information on the currently selected story, just in case
-		this.storyObject = []
+		this.storyObject = [];
+		
+		//Store information on the previously selected comment
+		//This is used for the back button functionality
+		this.commentParent = {"commentID": "", "permaLink": ""};
 	},
 
 	getCommentsForParent: function(inCommentParentID) {

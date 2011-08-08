@@ -64,11 +64,11 @@ enyo.kind({
 			{kind: enyo.Spinner, name: "headerSpinner", showing: "false"},
 			{kind: enyo.ToolButton, caption: "Go", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "subredditSubmit"},
 			{kind: enyo.ToolInput, name: "headerInputBox", hint: "Enter subreddit name", style: "width: 400px"},
-			{kind: enyo.ToolButton, caption: "Bug Report", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "submitBug"},
-			{kind: enyo.ToolButton, caption: "Submit Feedback", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "submitFeedback"},
+			{kind: enyo.ToolButton, icon: "icons/beta.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", style: "align: center", align: "center", pack: "center", onclick: "openBetaPopup"},
+
 
 			{kind: enyo.Spacer},
-			{name: "headerLoginButton", kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", caption: "Login", onclick: "openLoginPopup"}
+			{name: "headerLoginButton", kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark, enyo-radiobutton-dark", caption: "Login", onclick: "openLoginPopup"}
 		]},
 
 		{kind: enyo.SlidingPane, flex: 1, components: [
@@ -91,6 +91,16 @@ enyo.kind({
 
 		//The scrim
 		{kind: enyo.Scrim, name: "spinScrim"},
+		
+		{name: "betaPopup", kind: enyo.Popup, dismissWithClick: false, modal: true, components: [
+		
+			{kind: enyo.RowGroup, caption: "Beta Feedback", components: [
+							{kind: enyo.ToolButton, caption: "Bug Report", onclick: "submitBug"},
+							{kind: enyo.ToolButton, caption: "Submit Feedback", onclick: "submitFeedback"}
+			
+			]}
+		
+		]},
 
 		{name: "loginPopup", kind: enyo.Popup, dismissWithClick: false, modal: true, components: [ 
 			//The login pop-up box
@@ -147,6 +157,12 @@ enyo.kind({
 									method: "open", 
 		}
 	],
+	openBetaPopup: function() {
+		
+		this.$.spinScrim.show();
+		this.$.betaPopup.openAtCenter();
+		
+	},
 
 	showHeaderSpinner: function() {
 		this.$.headerSpinner.setShowing(true);
@@ -285,9 +301,11 @@ enyo.kind({
             "role":1,
             "value":"reditbugs@linkedlistcorruption.com"}],		
 			"summary":"Red It Beta Bug Report",
-			"text": "Thank you for electing to submit a bug report for the Red It Beta. Please fill the following fields out as accurately and completely as possible. Please Note: This form should only be used for bug reports, not for feature requests or general feedback. Bugs are mistakes or errors in already implemented functionality of Red It. If you'd like to request a feature or provide general feedback please use the 'Send Feedback' button instead. Thanks very much. <br><br>What anomolous behavior did you observe?<br>-------------------------------------------------------------------------<br><br><br>Why do you think this is a bug?<br>-------------------------------------------------------------------------<br><br><br>What steps would need to be taken to reproduce this issue?<br>-------------------------------------------------------------------------<br><br><br>What were you doing when the problem occured?<br>-------------------------------------------------------------------------<br><br><br>Have you observed this multiple times? If so, how many times have you observed it?<br>-------------------------------------------------------------------------<br><br><br>Is there any other information that may be helpful in identifying and resolving this issue?<br>-------------------------------------------------------------------------<br><br><br>Can Adam Drew, Red It's developer, contact you if there are further questions about this bug?<br>-------------------------------------------------------------------------<br><br><br>Thanks again for submitting a bug report during the Red It Beta!<br>-Adam"
+			"text": "Thank you for electing to submit a bug report for the Red It Beta. Please fill the following fields out as accurately and completely as possible. Please Note: This form should only be used for bug reports, not for feature requests or general feedback. Bugs are mistakes or errors in already implemented functionality of Red It. If you'd like to request a feature or provide general feedback please use the 'Send Feedback' button instead. Thanks very much. <br><br>What anomolous behavior did you observe?<br>-------------------------------------------------------------------------<br><br><br>Why do you think this is a bug?<br>-------------------------------------------------------------------------<br><br><br>What steps would need to be taken to reproduce this issue?<br>-------------------------------------------------------------------------<br><br><br>What were you doing when the problem occured?<br>-------------------------------------------------------------------------<br><br><br>Have you observed this multiple times? If so, how many times have you observed it?<br>-------------------------------------------------------------------------<br><br><br>Is there any other information that may be helpful in identifying and resolving this issue?<br>-------------------------------------------------------------------------<br><br><br>May Red It's developer contact you if there are further questions about this bug?<br>-------------------------------------------------------------------------<br><br><br>Thanks again for submitting a bug report during the Red It Beta!<br>-Adam"
 		};
 		this.$.emailService.call({"id": "com.palm.app.email", "params":params});
+		this.$.spinScrim.hide();
+		this.$.betaPopup.close();
 		
 	},
 	
@@ -298,9 +316,11 @@ enyo.kind({
             "role":1,
             "value":"reditfeedback@linkedlistcorruption.com"}],		
 			"summary":"Red It Beta Feedback",
-			"text": "Thank you for electing to send feedback for the Red It Beta. Whatever you've got to say, we'd like to hear it. Please Note: This form should be used for general feedback, not bug reports. If you've encountered something you think is a bug please use the 'Bug Report' button instead. Thanks in advance.<br><br>My Feedback<br>------------------------------------------------------------------<br><br><br><br>Do you give Adam, Red It's developer, permission to contact you regarding your feedback?<br>------------------------------------------------------------------<br><br><br><br>"
+			"text": "Thank you for electing to send feedback for the Red It Beta. Whatever you've got to say, we'd like to hear it. Please Note: This form should be used for general feedback, not bug reports. If you've encountered something you think is a bug please use the 'Bug Report' button instead. Thanks in advance.<br><br>My Feedback<br>------------------------------------------------------------------<br><br><br><br>Do you give Red It's developer permission to contact you regarding your feedback?<br>------------------------------------------------------------------<br><br><br><br>"
 		};
 		this.$.emailService.call({"id": "com.palm.app.email", "params":params});
+		this.$.spinScrim.hide();
+		this.$.betaPopup.close();
 		
 	},
 	
@@ -361,7 +381,7 @@ enyo.kind({
 // End log in related functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Begin on-off functions
+// Begin one-off functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 	subredditSubmit: function() {
 		//The user has hit the go button
@@ -386,6 +406,6 @@ enyo.kind({
 		// Resize the web view. We call this if the right pane gets resized
 		this.$.RightPane.webResize();
 	}
-// End on-off functions
+// End one-off functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 });

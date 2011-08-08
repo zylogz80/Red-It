@@ -122,6 +122,7 @@ enyo.kind({
 		//this.$.commentButton.setShowing(true);
 		enyo.log("DEBUG: Showing comments");
 		this.$.paneControl.selectViewByName("commentView");	
+		this.doCompleteDataLoad();
 	},
 	create: function() {
 		

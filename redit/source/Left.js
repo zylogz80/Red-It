@@ -35,9 +35,9 @@ enyo.kind({
 		onStartDataLoad: ""
 	},
 	components: [
-	
+			
 		{kind: "errorPopup", name: "errorPopup"},
-		
+		{kind: enyo.Scrim, name: "errorScrim"},
 		
 		{kind: enyo.TabGroup, components: [
 			{name: "headerTopTab", caption: "Hot Stories", onclick: "selectHotStories"},
@@ -72,7 +72,7 @@ enyo.kind({
 		]},
 		// The webservice is what grabs data from the web
 		{kind: enyo.WebService, 
-			url: "http://reddit.com/.json", 
+			url: "http://www.reddit.com/.json", 
 			name: "getStories", 
 			onSuccess:"getStoriesSuccess",
 			timeout: "30000", 
@@ -89,6 +89,7 @@ enyo.kind({
 		//we do this so that when the user selects another story we can change the background color of the old story back to normal
 		this.selectedRow = false;
 		// Call the function to get the stories
+		enyo.log("DEBUG: LeftView - create() - calling getStories");
 		this.$.getStories.call();
 	},
 
@@ -133,6 +134,8 @@ enyo.kind({
 	getStoriesFail: function(){
 		// Getting the stories failed for some reason
 		enyo.log("DEBUG: Getting stories failed!!!??? What?");
+		//this.$.errorScrim.show();
+		this.owner.$.spinScrim.show();
 		this.$.errorPopup.openAtCenter();
 		//this.$.theButton.setCaption("Getting stories failed");
 	},
@@ -163,7 +166,8 @@ enyo.kind({
 			comments : "",
 			reddit: "",
 			likes: "",
-			id : "" };
+			id : "",
+			permalink: "" };
 
 		//populate the structure with values from the reddit API for the selected story
 		storyStruct.id = this.rssResults[inEvent.rowIndex].data.name;
@@ -171,6 +175,7 @@ enyo.kind({
 		storyStruct.title = this.rssResults[inEvent.rowIndex].data.title;
 		storyStruct.reddit = this.rssResults[inEvent.rowIndex].data.subreddit;
 		storyStruct.likes = this.rssResults[inEvent.rowIndex].data.likes;
+		storyStruct.permalink = this.rssResults[inEvent.rowIndex].data.permalink;
 		//If a story title is too long trucate it and append elipsis
 		if ( storyStruct.title.length > 45) {
 			storyStruct.title = storyStruct.title.substring(0,45) + "...";

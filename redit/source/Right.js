@@ -39,7 +39,8 @@ enyo.kind({
 			comments : "",
 			reddit: "",
 			likes: "",
-			id : "" },
+			id : "",
+			permalink: "" },
 		isLoggedIn: false,
 		userModHash: ""
 	
@@ -154,6 +155,7 @@ enyo.kind({
 		this.storyStruct.reddit = inStoryStruct.reddit;
 		this.storyStruct.likes = inStoryStruct.likes;
 		this.storyStruct.id = inStoryStruct.id;
+		this.storyStruct.permalink = inStoryStruct.permalink;
 
 		this.$.headerStoryTab.setDisabled(false);
 		this.$.headerCommentsTab.setDisabled(false);
@@ -168,7 +170,9 @@ enyo.kind({
 		//Update the visual representation of the story
 		this.updateStoryUI();
 		enyo.log("DEBUG: Parent ID : " + this.storyStruct.id.slice(3));
-		this.$.commentView.getCommentsForParent(this.storyStruct.id.slice(3));
+		//this.$.commentView.getCommentsForParent(this.storyStruct.id.slice(3));
+		enyo.log("DEBUG: Left View: acceptStoryFromLeftPane : " + this.storyStruct.permalink);
+		this.$.commentView.initCommentsForStory(this.storyStruct.permalink);
 		this.$.commentView.setUserModHash(this.userModHash);
 		
 

@@ -29,7 +29,7 @@ enyo.kind({
 	components: [
 		{kind: "Header", name: "commentsHeader", style: "width: 100%", components: [
 //			{kind: "Button", caption: "Back"},
-			{kind: enyo.Spinner, name: "loadingSpinnger", showing: "true"},
+			{kind: enyo.Spinner, name: "loadingSpinner", showing: "true"},
 			{kind: enyo.VFlexBox, style: "width: 80%", components: [
 				{name: "headerTextsdsdsd", content: "Viewing comments on:", style: "font-size: 12px"},				
 				{name: "headerText", content: "Loading...", style: "font-size: 16px"}
@@ -61,11 +61,7 @@ enyo.kind({
 				//]}
 			]}
 		]},
-		{kind: enyo.WebService, 
-			name: "getComments", 
-			onSuccess:"getCommentsSuccess", 
-			onFailure:"getCommentsFail"
-		}	,
+
 		{kind: enyo.WebService, 
 			name: "getCommentReplies", 
 			onSuccess:"getCommentRepliesSuccess", 
@@ -81,48 +77,41 @@ enyo.kind({
 
 
 	],
-	
+
+//Begin Comment Vote Code	
 	commentUpVote: function(inSender, inIndex) {
-		
 		commentID = this.commentResults[inIndex].data.name;
-		
-		
 		this.$.redditVoteService.submitVote(commentID, "1", this.userModHash);
 		
 	},
 	commentDownVote: function(inSender, inIndex) {
-		
 		commentID = this.commentResults[inIndex].data.name;
-		
-		
 		this.$.redditVoteService.submitVote(commentID, "-1", this.userModHash);		
-		
 	},
-	
 	voteComplete: function() {
-		enyo.log
 		this.$.commentList.refresh();
-		
 	},
-	
+//End Comment Vote Code
+
+
 	clickedOnItem: function(inSender, inEvent) {
 
+		this.commentDepth = this.commentDepth+1;
 
 		this.$.backButton.setDisabled(false);
 		
-		this.$.loadingSpinnger.setShowing(true);
+		this.$.loadingSpinner.setShowing(true);
 		this.$.headerText.setContent("Loading...");
 		this.$.commentList.setShowing(false);
 		
 		
-		this.commentParent.commentID = this.commentResults[inEvent.rowIndex].data.name.slice(3);
-		this.commentParent.permaLink = this.permaLink;
 		
-		enyo.log("DEBUG: this.commentParent.commentID = " + this.commentParent.commentID);
-		enyo.log("DEBUG: this.commentParent.permaLink = " + this.commentParent.permaLink);
+		this.getCommentsByPermaLink(this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3));
 		
-		this.$.getCommentReplies.setUrl("http://www.reddit.com/"+this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3)+".json");
-		this.$.getCommentReplies.call();
+		
+		
+		//this.$.getCommentReplies.setUrl("http://www.reddit.com/"+this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3)+".json");
+		//this.$.getCommentReplies.call();
 
 		if ( this.commentResults[inEvent.rowIndex].data.body.length > 55) {
 			this.$.headerText.setContent(this.commentResults[inEvent.rowIndex].data.body.substring(0,55) + "..." );
@@ -139,17 +128,15 @@ enyo.kind({
 
 		
 	},
-	
+/*	
 	showOptions: function(inSender, inEvent) {
 		
-		enyo.log("DEBUG: Trying to get sender index: " + enyo.json.stringify(inSender));
 		
 		this.$.optionMenu.openAtEvent(inSender);
 	},
-	
+*/
 	create: function() {
 		this.inherited(arguments);
-		enyo.log("DEBUG: CommentView Exists");
 		this.commentResults = [];
 		this.noStory = false;
 		
@@ -165,124 +152,131 @@ enyo.kind({
 		//Store information on the previously selected comment
 		//This is used for the back button functionality
 		this.commentParent = {"commentID": "", "permaLink": ""};
+		
+		this.commentDepth = 0;
 	},
 
-	getCommentsForParent: function(inCommentParentID) {
-		enyo.log("DEBUG: CommentView getCommentsForParent" + "http://www.reddit.com/comments/"+inCommentParentID+".json");
-		// Get comments for any parent
-		// The parents could be a story or
-		// or it could be another comment
-		this.$.getComments.setUrl("http://www.reddit.com/comments/"+inCommentParentID+".json");
-		this.$.getComments.call();
+	initCommentsForStory: function(inPermaLink) {
+		this.commentDepth = 0;
+		this.permaLink = inPermaLink;
+		this.getCommentsByPermaLink(this.permaLink);
+	},
+
+	getCommentsByPermaLink: function(inPermaLink) {
+		enyo.log("COMMENTS: getCommentsByPermaLink : " + "http://www.reddit.com"+inPermaLink+".json");
+		
+		this.$.getCommentReplies.setUrl("http://www.reddit.com"+inPermaLink+".json");
+		
+		this.$.getCommentReplies.call()
 	},
 
 
 	getCommentsFail: function(){
 		
-		enyo.log("DEBUG: Some shit went wrong");
 	}
 ,
 
-	getCommentsSuccess: function(inSender, inResponse) {
-
-		enyo.log("DEBUG: CommentView getCommentsSuccess");
-		// Put the rss results into an rssResults array
-		this.commentResults = inResponse[1].data.children;
-		
-		tempObject2 = this.commentResults[0];
-		if ( tempObject2 ) {
-			this.noStory = false;
-		} 	else {
-			this.noStory = true;
-			enyo.log("DEBUG: getCommentsSuccess: set noStory = true");
-		}
-		
-		
-		//permaLinkArray = [];
-		//permaLinkArray = inResponse[0].data.children;
-		this.storyObject = inResponse[0].data.children;;
-		this.permaLink = this.storyObject[0].data.permalink;
-		enyo.log("DEBUG: Permalink " + this.permaLink);
-		
-		if ( this.storyObject[0].data.title.length > 55) {
-			this.$.headerText.setContent(this.storyObject[0].data.title.substring(0,55) + "..." );
-		} else {
-			this.$.headerText.setContent(this.storyObject[0].data.title);
-		}
-		
-
-		// Re-render the item list to fill it with the rss results
-		this.$.commentList.setShowing(true);
-		this.$.commentList.refresh();
-		this.$.commentList.punt();
-		this.$.loadingSpinnger.setShowing(false);
-		
-
-
-	},
-
 
 	getCommentRepliesSuccess: function(inSender, inResponse) {
-		enyo.log("DEBUG: COMMENT REPLIES");
 
 		this.$.commentsHeader.setShowing(true);
 
+		//This comment is a monument
+		//It marks the spot where unintelligible voodoo code once stood
+
+		//Two objects are returned:
+		//							inResponse[0] - Info on the story
+		//							inResponse[1] - The comments
+		//Because we're only interested in the comments we go right for object 1:		
 		
-		//I don't understand this code at all
-		//These three lines took hours of trial and error
-		//But it works. Fuck you reddit api. <3 <3 <3
-		tempObject = inResponse[1].data.children;
-		tempObject2 = tempObject[0].data.replies;
-		if ( tempObject2 ) {
-			this.commentResults = tempObject2.data.children;
-			this.noStory = false;
-		} 	else {
-			this.noStory = true;
-			enyo.log("DEBUG: getCommentRepliesSuccess: set noStory = true");
-		}
+		//The special sauce:
+		//--------------------------------------------------------------------------------------------
+		//When we're looking at the comment on a story we just want commentObject[index].data.children
+		//But when we're looking at a comment on a comment we want commentObject[index].data.replies
+		//This is a major fuckup on Reddit's part AFAIC
+		//We can get around this by keeping track of how "deep" we are in the comment tree
+		//We start with a commentDepth of 0
+		//As we click on comments we increase commentDepth
+		//If commentDepth > 0 then we are interested in replies
+		//If commentDepth = 0 then we are interested in children
+		if (this.commentDepth == 0) {
+			commentObject = inResponse[1].data.children;
 			
-		//
+			if ( commentObject ) {
+				this.noStory = false;
+			} 	else {
+				this.noStory = true;
+
+			}
+			
+		} else {
+			tempObject = inResponse[1].data.children;
+			tempObject2 = tempObject[0].data.replies;		
+			if ( tempObject2 ) {
+				commentObject = tempObject2.data.children;
+			} else {
+					this.noStory = true;
+			}
+			
+		}
+
+
+
+			if ( this.noStory == false ) {
+				this.commentResults = commentObject;
+			} 	else {
+				this.commentResults = [];
+
+			}
+
+		
+		
+
 
 		this.$.commentList.setShowing(true);
 		this.$.commentList.refresh();
-		this.$.loadingSpinnger.setShowing(false);
+		this.$.commentList.punt();
+		this.$.loadingSpinner.setShowing(false);
 
 	},
 
 
 
-	getListItem: function(inSender, inIndex){
-		enyo.log("DEBUG: CommentView getListItem");
-		// This function gets automatically called with the VirtualRepeater gets rendered
-		// Get the count of the all the RSS items resurned
-		if (this.noStory == true) {
-			enyo.log("DEBUG: getListItem: noStore == true was trapped");
-			this.$.commentItem.setSwipeable(false);
-			this.$.commentRowGroup.setCaption("No comments found!");
-			this.$.commentText.setContent("There are no comments on this yet. Why don't you add one? Or not. Whatever.");
-			this.noStory = false;
-			this.commentResults = [];
-			return true;
-		}
-		var count = this.commentResults[inIndex];
-		// If the count is > 0
-		if (count && this.noStory == false) {
-			var score = parseInt(count.data.ups) - parseInt(count.data.downs);
-			this.$.commentRowGroup.setCaption("Comment by: " + count.data.author + ", Score: " + score);
-			this.$.commentText.setContent(count.data.body);//count.data.body);
-			// Returning true is how the item list knows to keep iterating
-			if ( count.data.likes == true) {
-				// thing to do if upvoted
-				this.$.storyVoteStatus.setStyle("color: #FCA044; font-size: 12px");
-				this.$.storyVoteStatus.setContent("You upvoted!")
-			}
-			if (count.data.likes == false) {
-				//thing to do if downvoted
-				this.$.storyVoteStatus.setStyle("color: #5797FF; font-size: 12px");
-				this.$.storyVoteStatus.setContent("You downvoted!");
-			}
-			return true;
-		} 
-	}
+getListItem: function(inSender, inIndex){
+enyo.log("DEBUG: CommentView getListItem");
+// This function gets automatically called with the VirtualRepeater gets rendered
+// Get the count of the all the RSS items resurned
+if (this.noStory == true) {
+enyo.log("DEBUG: getListItem: noStore == true was trapped");
+this.$.commentItem.setSwipeable(false);
+this.$.commentRowGroup.setCaption("No comments found!");
+this.$.commentText.setContent("There are no comments on this yet. Why don't you add one? Or not. Whatever.");
+
+//this.commentResults = [];
+return true;
+this.noStory = false;
+}
+
+var count = this.commentResults[inIndex];
+// If the count is > 0
+if (count && this.noStory == false) {
+	enyo.log("FUCK YOU");
+var score = parseInt(count.data.ups) - parseInt(count.data.downs);
+this.$.commentRowGroup.setCaption("Comment by: " + count.data.author + ", Score: " + score);
+this.$.commentText.setContent(count.data.body);//count.data.body);
+// Returning true is how the item list knows to keep iterating
+if ( count.data.likes == true) {
+// thing to do if upvoted
+this.$.storyVoteStatus.setStyle("color: #FCA044; font-size: 12px");
+this.$.storyVoteStatus.setContent("You upvoted!")
+}
+if (count.data.likes == false) {
+//thing to do if downvoted
+this.$.storyVoteStatus.setStyle("color: #5797FF; font-size: 12px");
+this.$.storyVoteStatus.setContent("You downvoted!");
+}
+return true;
+}
+}
 
 })

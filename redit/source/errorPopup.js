@@ -27,9 +27,7 @@ enyo.kind({
 	components: [
 		{kind: enyo.HFlexBox, align: "center", name: "theBox" , components: [	
 			{kind: enyo.Image, src: "icons/exclaim.png"},
-			{content: "Uh oh! I can't talk to Reddit! Is Reddit down?"}, 
-			{content: "Sorry!:("},
-			{content: "Error Code: STUFFSBROKE"}
+			{content: "Uh oh! I can't talk to Reddit!<br><span style='font-size: 14px'>Are you connected to the internet?<br>If so then this could be an error in webOS or at Reddit.<br>Give it some time and see if it works later.<br>If the issue persists try rebooting your device.<br>This is not a bug in the Red It app.<span>"}
 		]}
 	],
 	

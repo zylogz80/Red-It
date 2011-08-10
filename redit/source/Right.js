@@ -28,7 +28,8 @@ enyo.kind({
 		onUpVote:"",
 		onDownVote: "",
 		onCompleteDataLoad: "",
-		onStartDataLoad: ""
+		onStartDataLoad: "",
+		onNewCommentPressed: ""
 	},
 	published: {
 		storyStruct: {
@@ -75,7 +76,7 @@ enyo.kind({
 			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "backButton", disabled: "true", showing: "false", caption: "Previous Comment", onclick: "backButtonPressed"},
 
 			
-			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "commentButton", disabled: "true", showing: "false", caption: "Add Comment", onclick: "commentButtonPressed"}
+			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "commentButton", disabled: "true", showing: "false", caption: "Add Comment", onclick: "doNewCommentPressed"}
 			
 			
 			]},
@@ -187,6 +188,7 @@ enyo.kind({
 		enyo.log("DEBUG: Parent ID : " + this.storyStruct.id.slice(3));
 		//this.$.commentView.getCommentsForParent(this.storyStruct.id.slice(3));
 		enyo.log("DEBUG: Left View: acceptStoryFromLeftPane : " + this.storyStruct.permalink);
+		this.$.commentView.setCurrentCommentParent(this.storyStruct.id);
 		this.$.commentView.initCommentsForStory(this.storyStruct.permalink);
 		this.$.commentView.setUserModHash(this.userModHash);
 		

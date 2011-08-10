@@ -125,7 +125,7 @@ enyo.kind({
 		},	
 		{kind: enyo.WebService, 
 			// This service is used to comment
-			url: "http://www.reddit.com/api/reply", 
+			url: "http://www.reddit.com/api/comment", 
 			method: "POST",
 			timeout: "30000",
 			name: "replyWebService", 
@@ -145,6 +145,7 @@ enyo.kind({
 		
 	},
 	submitReply: function(thingID, replyText, subRedditName, userModHash) {
+		enyo.log("DEBUG: Entered submitReply");
 		// Reply to a story or comment
 		this.$.replyWebService.call({thing_id: thingID, text: replyText, r: subRedditName, uh: userModHash});
 	},

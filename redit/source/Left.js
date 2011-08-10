@@ -104,6 +104,7 @@ enyo.kind({
 		if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json");}
 		if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/.json");}
 		this.refreshStoryList();
+		this.$.uiList.punt();
 		this.$.headerNewTab.setDepressed(false);
 		this.$.headerTopTab.setDepressed(true);
 		
@@ -115,6 +116,7 @@ enyo.kind({
 		if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/new.json?sort=new");}
 		if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new");}
 		this.refreshStoryList();
+		this.$.uiList.punt();
 		this.$.headerTopTab.setDepressed(false);
 		this.$.headerNewTab.setDepressed(true);
 
@@ -236,12 +238,18 @@ enyo.kind({
 				this.$.storyVoteStatus.setStyle("color: #FCA044");
 				this.$.storyComma.setContent(",");
 				this.$.storyVoteStatus.setContent("You upvoted!")
+				return true;
 			}
 			if (count.data.likes == false) {
 				//thing to do if downvoted
 				this.$.storyVoteStatus.setStyle("color: #5797FF");
 				this.$.storyComma.setContent(", ");
 				this.$.storyVoteStatus.setContent("You downvoted!");
+				return true;
+			} else {
+				this.$.storyComma.setContent("");
+				this.$.storyVoteStatus.setContent("");			
+				return true;	
 			}
 			// Returning true is how the item list knows to keep iterating
 			return true;

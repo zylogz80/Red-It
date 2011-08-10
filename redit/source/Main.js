@@ -74,7 +74,7 @@ enyo.kind({
 		{kind: enyo.SlidingPane, flex: 1, components: [
 			//Sliding panes
 			{name: "LeftPane", style: "width: 400px", kind: "readIT.leftView", onSelectedStory: "selectedStory", onNewPostPressed: "showNewPostBox", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
-			{name: "RightPane", flex: 2,kind: "readIT.rightView", 	onResize: "resizeWebView", onUpVote: "upVote", onDownVote: "downVote", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
+			{name: "RightPane", flex: 2,kind: "readIT.rightView", 	onResize: "resizeWebView", onUpVote: "upVote", onNewCommentPressed: "openCommentPopup", onDownVote: "downVote", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
 		]},
 
 		//Reddit API services
@@ -85,6 +85,7 @@ enyo.kind({
 		{kind: "readIT.RedditAPI", name: "redditUpVoteService", onPostDataComplete: "voteComplete"},
 		{kind: "readIT.RedditAPI", name: "redditDownVoteService", onPostDataComplete: "voteComplete"},
 		{kind: "readIT.RedditAPI", name: "redditSubmitStoryService", onPostDataComplete: "submitComplete"},
+		{kind: "readIT.RedditAPI", name: "redditSubmitCommentService", onPostDataComplete: "replyComplete", onFail: "replyFailed"},
 
 		//The preferences handler does the work of getting and setting values in the cookie
 		{kind: "readIT.PrefsHandler", name: "prefsHandler"},
@@ -151,12 +152,64 @@ enyo.kind({
 			]}
 		]},
 		
-		
+		{name: "newCommentPopup", align: "center", kind: enyo.Popup, dismissWithClick: false, modal: true, components: [
+			//The new post dialog box
+			{kind: enyo.RowGroup, caption: "Submit a comment", components: [
+				{kind: enyo.HFlexBox, style: "width: 500px",align: "center", pack: "center",components: [
+					{kind: enyo.Input, style: "width: 500px", alwaysLooksFocused: true,name: "commentInputBox",  hint: "Enter your comment"},
+				]},
+
+				{kind: enyo.HFlexBox, align: "center", pack: "center",components: [ 
+					{name: "newStorySubmitButton", kind: enyo.Button, caption: "Submit Comment", onclick: "submitNewComment"},
+					{name: "newStoryCancelButton", kind: enyo.Button, caption: "Close this box", onclick: "hideNewCommentPopup"}
+				]}				
+			
+			]}
+		]},
+				
 		{name: "emailService", 		kind: "PalmService", 
 									service: "palm://com.palm.applicationManager/", 
 									method: "open", 
 		}
 	],
+	
+	replyFailed: function() {
+		
+		enyo.log("DEBUG: Entered replyFailed");
+	},
+	submitNewComment: function() {
+		enyo.log("DEBUG: Entered submitNewComment");
+		enyo.log("DEBUG: this.$.RightPane.$.commentView.getCurrentCommentParent() : " + this.$.RightPane.$.commentView.getCurrentCommentParent());
+		enyo.log("DEBUG: this.$.commentInputBox.getValue() : " + this.$.commentInputBox.getValue());
+		enyo.log("DEBUG: this.$.RightPane.storyStruct.reddit : " + this.$.RightPane.storyStruct.reddit);
+		enyo.log("DEBUG: this.userStruct.modHash : " + this.userStruct.modHash);
+		// submitReply: function(thingID, replyText, subRedditName, userModHash)
+		this.$.redditSubmitCommentService.submitReply(	this.$.RightPane.$.commentView.getCurrentCommentParent(), 
+														this.$.commentInputBox.getValue(), 
+														this.$.RightPane.storyStruct.reddit, 
+														this.userStruct.modHash);
+		
+	},	
+	replyComplete: function() {
+		enyo.log("DEBUG: Entered replyComplete");
+
+		
+		this.$.RightPane.$.commentView.refreshView();
+		this.hideNewCommentPopup();
+		
+	},
+	openCommentPopup: function() {
+		
+		this.$.spinScrim.show();
+		this.$.newCommentPopup.openAtCenter();
+	},
+	
+	hideNewCommentPopup: function() {
+			this.$.spinScrim.hide();
+		this.$.newCommentPopup.close();
+		
+	},
+	
 	openBetaPopup: function() {
 		
 		this.$.spinScrim.show();

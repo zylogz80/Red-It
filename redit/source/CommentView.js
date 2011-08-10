@@ -24,7 +24,8 @@ enyo.kind({
 	style: "background-image: url('icons/dark-gray-texture.png')",
 	published: {
 		isLoggedIn: false,
-		userModHash: ""
+		userModHash: "",
+		currentCommentParent: ""
 	},
 	components: [
 		{kind: "Header", name: "commentsHeader", style: "width: 100%", components: [
@@ -91,12 +92,15 @@ enyo.kind({
 		commentID = this.commentResults[inIndex].data.name;
 		this.$.redditVoteService.submitVote(commentID, "1", this.userModHash);
 		
+		
 	},
 	commentDownVote: function(inSender, inIndex) {
 		commentID = this.commentResults[inIndex].data.name;
 		this.$.redditVoteService.submitVote(commentID, "-1", this.userModHash);		
+
 	},
 	voteComplete: function() {
+		this.getCommentsByPermaLink(this.commentHistory[this.commentDepth]);
 		this.$.commentList.refresh();
 	},
 //End Comment Vote Code
@@ -115,7 +119,8 @@ enyo.kind({
 		
 		
 		this.commentHistory[this.commentDepth] = this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3);
-		
+		this.commentIDHistory[this.commentDepth] = this.commentResults[inEvent.rowIndex].data.name;
+		this.currentCommentParent = this.commentIDHistory[this.commentDepth];
 		
 		this.getCommentsByPermaLink(this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3));
 		
@@ -130,6 +135,8 @@ enyo.kind({
 			this.$.headerText.setContent(this.commentResults[inEvent.rowIndex].data.body);
 		}
 		
+		this.$.commentList.punt();
+		
 	},
 	
 	backButtonPressed: function() {
@@ -141,6 +148,7 @@ enyo.kind({
 			this.$.headerText.setContent("Loading...");
 			this.$.commentList.setShowing(false);
 			this.commentDepth = this.commentDepth - 1;
+			this.currentCommentParent = this.commentIDHistory[this.commentDepth];
 			this.getCommentsByPermaLink(this.commentHistory[this.commentDepth]);
 			this.$.commentList.setShowing(true);
 			this.$.commentList.refresh();
@@ -172,8 +180,10 @@ enyo.kind({
 		//Store information on the currently selected story, just in case
 		this.storyObject = [];
 
-		
+		//Keeps track of the permalinks for back button funcitonality
 		this.commentHistory = [];
+		//Keeps track of the current selected object ID for commenting
+		this.commentIDHistory = [];
 		
 		this.commentDepth = 0;
 	},
@@ -183,7 +193,19 @@ enyo.kind({
 		this.commentDepth = 0;
 		this.permaLink = inPermaLink;
 		this.commentHistory[this.commentDepth] = inPermaLink;
+		this.commentIDHistory[this.commentDepth] = this.currentCommentParent;
 		this.getCommentsByPermaLink(this.permaLink);
+		this.$.commentList.setShowing(false);
+		this.$.commentList.punt();
+	},
+	
+	
+	refreshView: function() {
+		enyo.log("DEBUG: Entered refreshView");
+		
+		this.getCommentsByPermaLink(this.commentHistory[this.commentDepth]);
+		this.$.commentList.refresh();
+		
 	},
 
 	getCommentsByPermaLink: function(inPermaLink) {
@@ -259,7 +281,7 @@ enyo.kind({
 			this.commentResults = commentObject;
 			this.$.commentList.setShowing(true);
 			this.$.commentList.refresh();
-			this.$.commentList.punt();
+			
 			this.$.loadingSpinner.setShowing(false);
 			this.$.noCommentItem.setShowing(false);
 		}
@@ -286,14 +308,21 @@ enyo.kind({
 			if ( count.data.likes == true) {
 				// thing to do if upvoted
 				this.$.storyVoteStatus.setStyle("color: #FCA044; font-size: 12px");
-				this.$.storyVoteStatus.setContent("You upvoted!")
+				this.$.storyVoteStatus.setContent("You upvoted!");
+				return true;
 			}
 			if (count.data.likes == false) {
 				//thing to do if downvoted
 				this.$.storyVoteStatus.setStyle("color: #5797FF; font-size: 12px");
 				this.$.storyVoteStatus.setContent("You downvoted!");
+				return true;
+			} else {
+				
+				this.$.storyVoteStatus.setContent("");
+				return true;
+				
 			}
-		return true;
+		
 		}
 	}
 

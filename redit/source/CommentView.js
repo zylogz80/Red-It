@@ -209,6 +209,9 @@ enyo.kind({
 	},
 
 	getCommentsByPermaLink: function(inPermaLink) {
+		
+		this.noStory = false;
+		
 		if (this.commentDepth == 0) {
 			
 			this.owner.$.backButton.setDisabled(true);

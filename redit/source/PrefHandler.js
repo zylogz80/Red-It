@@ -37,12 +37,22 @@ enyo.kind({
 
 	},
 	initPrefs: function() {
+		
+		enyo.log("DEBUG : Entering initPrefs : this.prefsStruct : " + enyo.json.stringify(this.prefsStruct));
+		
 		if (!enyo.getCookie('appPrefs')) {
-			enyo.setCookie('appPrefs', this.prefsStruct);
+			enyo.setCookie('appPrefs', enyo.json.stringify(this.prefsStruct));
 		}
 	},
 	getPrefs: function() {
+		
+		enyo.log("DEBUG : Entering getPrefs : this.prefsStruct : " + enyo.json.stringify(this.prefsStruct));
+
+		
 		this.prefsStruct = enyo.json.parse(enyo.getCookie('appPrefs'));
+		
+		enyo.log("DEBUG : Leaving getPrefs : this.prefsStruct : " + enyo.json.stringify(this.prefsStruct));
+		
 		return this.prefsStruct;
 	},
 	setPrefs: function(inPrefsStruct) {

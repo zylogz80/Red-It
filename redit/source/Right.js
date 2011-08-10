@@ -177,7 +177,7 @@ enyo.kind({
 		this.$.backButton.setDisabled(false);
 
 
-		if ( this.isLoggedIn = true ) {
+		if ( this.isLoggedIn == true ) {
 			this.$.footerUpButton.setDisabled(false);
 			this.$.footerDownButton.setDisabled(false);
 			//this.$.commentButton.setDisabled(false);

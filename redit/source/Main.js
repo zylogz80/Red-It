@@ -36,14 +36,6 @@ enyo.kind({
 			commentKarma : "",
 			isGold: ""
 		},
-		prefsStruct: {
-			// This holds information on the user's preferences
-			// These are stored in the cookie
-			savedLogin: false,
-			userName: false,
-			password: false,
-			homeReddit: "frontpage"
-		},
 
 		// Are we currently logged in?
 		isLoggedIn: false,
@@ -226,10 +218,17 @@ enyo.kind({
 	},
 	create: function() {
 		//The create function
-		//We use this to define some private variables
 
 		//Finish inheritence from our parent kind
 		this.inherited(arguments);
+
+		this.prefsStruct = {
+			savedLogin: false,
+			userName: false,
+			password: false,
+			homeReddit: "frontpage"
+		};
+
 
 		//Preferences initialization code
 		//The initPrefs() function checks to see if a Red It preferences cookie already exists
@@ -412,7 +411,12 @@ enyo.kind({
 		//Initiate login
 		this.prefsStruct.userName = this.$.popupUserNameInput.getValue();
 		this.prefsStruct.password = this.$.popupPasswordInput.getValue();
-		this.prefsStruct.savedLogin = this.$.popupSaveCheckBox.getChecked();
+		
+		if ( this.$.popupSaveCheckBox.getChecked() == true) {
+			
+			this.prefsStruct.savedLogin = true;
+			
+		}
 		this.savePrefs();
 		this.loginBegin();
 	

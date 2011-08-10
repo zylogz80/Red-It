@@ -70,7 +70,13 @@ enyo.kind({
 				{name:"footerDownButton",caption: "Down", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "doDownVote", depressed: false}
 			]},
 			
-			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "shareButton", disabled: "true", caption: "Share", onclick: "shareMenuShow"}
+			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "shareButton", disabled: "true", caption: "Share", onclick: "shareMenuShow"},
+
+			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "backButton", disabled: "true", showing: "false", caption: "Previous Comment", onclick: "backButtonPressed"},
+
+			
+			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "commentButton", disabled: "true", showing: "false", caption: "Add Comment", onclick: "commentButtonPressed"}
+			
 			
 			]},
 		{kind: enyo.Menu, name: "shareMenu", components: [
@@ -112,7 +118,9 @@ enyo.kind({
 		this.$.footerUpButton.setShowing(true);
 		this.$.footerDownButton.setShowing(true);
 		this.$.shareButton.setShowing(true);
-		//this.$.commentButton.setShowing(false);
+		this.$.commentButton.setShowing(false);
+		this.$.backButton.setShowing(false);
+
 		enyo.log("DEBUG: Showing story");
 		this.$.paneControl.selectViewByName("webViewer");	
 	},
@@ -120,7 +128,9 @@ enyo.kind({
 		this.$.footerUpButton.setShowing(false);
 		this.$.footerDownButton.setShowing(false);
 		this.$.shareButton.setShowing(false);
-		//this.$.commentButton.setShowing(true);
+		this.$.commentButton.setShowing(true);
+		this.$.backButton.setShowing(true);
+
 		enyo.log("DEBUG: Showing comments");
 		this.$.paneControl.selectViewByName("commentView");	
 		this.doCompleteDataLoad();
@@ -129,7 +139,9 @@ enyo.kind({
 		
 		this.inherited(arguments);
 		
-		//this.$.commentButton.setShowing(false);
+		
+		this.$.commentButton.setShowing(false);
+		this.$.backButton.setShowing(false);
 
 		this.$.paneControl.selectViewByName("webViewer");
 		
@@ -160,6 +172,9 @@ enyo.kind({
 		this.$.headerStoryTab.setDisabled(false);
 		this.$.headerCommentsTab.setDisabled(false);
 		this.$.shareButton.setDisabled(false);
+		this.$.commentButton.setDisabled(false);
+		this.$.backButton.setDisabled(false);
+
 
 		if ( this.isLoggedIn = true ) {
 			this.$.footerUpButton.setDisabled(false);
@@ -207,5 +222,11 @@ enyo.kind({
 	},
 	webResize: function() {
 		this.$.webViewer.resize();
+	},
+	
+	backButtonPressed: function() {
+		
+		this.$.commentView.backButtonPressed();
+		
 	}
 })

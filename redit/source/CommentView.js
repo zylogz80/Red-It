@@ -30,13 +30,10 @@ enyo.kind({
 		{kind: "Header", name: "commentsHeader", style: "width: 100%", components: [
 //			{kind: "Button", caption: "Back"},
 			{kind: enyo.Spinner, name: "loadingSpinner", showing: "true"},
-			{kind: enyo.VFlexBox, style: "width: 80%", components: [
-				{name: "headerTextsdsdsd", content: "Viewing comments on:", style: "font-size: 12px"},				
+			{kind: enyo.VFlexBox, style: "width: 95%", components: [
+				{name: "headerMessage", content: "Viewing comments on:", style: "font-size: 12px"},				
 				{name: "headerText", content: "Loading...", style: "font-size: 16px"}
-			]},
-			{kind: enyo.Spacer},
-			{kind: "Button", caption: "Back", disabled: "true", name: "backButton", onclick: "backButtonPressed"},
-			{kind: "Button", caption: "Comment"}
+			]}
 		]},
 			{kind: enyo.Item, name: "noCommentItem", style: "background-image: url('icons/gray-texture.png')", showing: "false", components: [
 				{kind: enyo.RowGroup, style: "width: 95%; margin-right: 6px;", caption: "No comments found!", components: [
@@ -106,15 +103,18 @@ enyo.kind({
 
 
 	clickedOnItem: function(inSender, inEvent) {
+		
+		this.owner.$.backButton.setDisabled(false);
+
 
 		this.commentDepth = this.commentDepth+1;
-
-		this.$.backButton.setDisabled(false);
 		
 		this.$.loadingSpinner.setShowing(true);
 		this.$.headerText.setContent("Loading...");
 		this.$.commentList.setShowing(false);
 		
+		
+		this.commentHistory[this.commentDepth] = this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3);
 		
 		
 		this.getCommentsByPermaLink(this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3));
@@ -124,8 +124,8 @@ enyo.kind({
 		//this.$.getCommentReplies.setUrl("http://www.reddit.com/"+this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3)+".json");
 		//this.$.getCommentReplies.call();
 
-		if ( this.commentResults[inEvent.rowIndex].data.body.length > 55) {
-			this.$.headerText.setContent(this.commentResults[inEvent.rowIndex].data.body.substring(0,55) + "..." );
+		if ( this.commentResults[inEvent.rowIndex].data.body.length > 70) {
+			this.$.headerText.setContent(this.commentResults[inEvent.rowIndex].data.body.substring(0,70) + "..." );
 		} else {
 			this.$.headerText.setContent(this.commentResults[inEvent.rowIndex].data.body);
 		}
@@ -133,10 +133,21 @@ enyo.kind({
 	},
 	
 	backButtonPressed: function() {
-		
-		this.$.getCommentReplies.setUrl("http://www.reddit.com/"+this.commentParent.permaLink+this.commentParent.commentID +".json");
-		this.$.getCommentReplies.call();
 
+		if (this.commentDepth > 0) {
+			this.noStory = false;
+			this.$.noCommentItem.setShowing(false);
+			this.$.loadingSpinner.setShowing(true);
+			this.$.headerText.setContent("Loading...");
+			this.$.commentList.setShowing(false);
+			this.commentDepth = this.commentDepth - 1;
+			this.getCommentsByPermaLink(this.commentHistory[this.commentDepth]);
+			this.$.commentList.setShowing(true);
+			this.$.commentList.refresh();
+			this.$.commentList.punt();
+			this.$.loadingSpinner.setShowing(false);
+			
+		}
 		
 	},
 /*	
@@ -160,21 +171,28 @@ enyo.kind({
 		
 		//Store information on the currently selected story, just in case
 		this.storyObject = [];
+
 		
-		//Store information on the previously selected comment
-		//This is used for the back button functionality
-		this.commentParent = {"commentID": "", "permaLink": ""};
+		this.commentHistory = [];
 		
 		this.commentDepth = 0;
 	},
 
 	initCommentsForStory: function(inPermaLink) {
+		this.owner.$.backButton.setDisabled(true);
 		this.commentDepth = 0;
 		this.permaLink = inPermaLink;
+		this.commentHistory[this.commentDepth] = inPermaLink;
 		this.getCommentsByPermaLink(this.permaLink);
 	},
 
 	getCommentsByPermaLink: function(inPermaLink) {
+		if (this.commentDepth == 0) {
+			
+			this.owner.$.backButton.setDisabled(true);
+		}
+		
+			
 		enyo.log("COMMENTS: getCommentsByPermaLink : " + "http://www.reddit.com"+inPermaLink+".json");
 		
 		this.$.getCommentReplies.setUrl("http://www.reddit.com"+inPermaLink+".json");

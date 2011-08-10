@@ -38,7 +38,13 @@ enyo.kind({
 			{kind: "Button", caption: "Back", disabled: "true", name: "backButton", onclick: "backButtonPressed"},
 			{kind: "Button", caption: "Comment"}
 		]},
+			{kind: enyo.Item, name: "noCommentItem", style: "background-image: url('icons/gray-texture.png')", showing: "false", components: [
+				{kind: enyo.RowGroup, style: "width: 95%; margin-right: 6px;", caption: "No comments found!", components: [
+					{kind: enyo.HtmlContent,  style: "color: white;font-size: 14px", content: "There are no comments on this yet. Why don't you add one? Or not. Whatever."}
+				]}
+			]},
 		{kind: enyo.FadeScroller, flex: 1, components: [ 
+
 			// VirtualRepeater is a list that can be automatically filled with a number of items
 			{name: "commentList", kind: enyo.VirtualList, tapHighlight: true, onSetupRow: "getListItem", components: [
 				//{kind: enyo.Item,  name: "commentItem", layoutKind: enyo.HFlexLayout, tapHighlight: true, align: "center", components:[
@@ -60,7 +66,12 @@ enyo.kind({
 					]}
 				//]}
 			]}
+			
+
 		]},
+		
+
+
 
 		{kind: enyo.WebService, 
 			name: "getCommentReplies", 
@@ -139,6 +150,7 @@ enyo.kind({
 		this.inherited(arguments);
 		this.commentResults = [];
 		this.noStory = false;
+		this.$.noCommentItem.setShowing(false);
 		
 		//This is pretty obscure but the only way to get a single comment's thread is:
 		// reddit.com/<permalink>/<comment-id>
@@ -199,6 +211,10 @@ enyo.kind({
 		//As we click on comments we increase commentDepth
 		//If commentDepth > 0 then we are interested in replies
 		//If commentDepth = 0 then we are interested in children
+		
+		//this.noStory should really be called this.noComment
+		//we set it to true or false depending on whether or not there are comments for a given item
+		//we use this to control when we display comments or the "no comments found" item"
 		if (this.commentDepth == 0) {
 			commentObject = inResponse[1].data.children;
 			
@@ -216,67 +232,51 @@ enyo.kind({
 				commentObject = tempObject2.data.children;
 			} else {
 					this.noStory = true;
+					
 			}
 			
 		}
 
-
-
-			if ( this.noStory == false ) {
-				this.commentResults = commentObject;
-			} 	else {
-				this.commentResults = [];
-
-			}
-
-		
-		
-
-
-		this.$.commentList.setShowing(true);
-		this.$.commentList.refresh();
-		this.$.commentList.punt();
-		this.$.loadingSpinner.setShowing(false);
+		if ( this.noStory == false ) {
+			this.commentResults = commentObject;
+			this.$.commentList.setShowing(true);
+			this.$.commentList.refresh();
+			this.$.commentList.punt();
+			this.$.loadingSpinner.setShowing(false);
+			this.$.noCommentItem.setShowing(false);
+		}
+		if (this.noStory == true)  {
+			this.commentResults = [];
+			this.$.noCommentItem.setShowing(true);
+			this.$.loadingSpinner.setShowing(false);
+		}
 
 	},
 
 
 
-getListItem: function(inSender, inIndex){
-enyo.log("DEBUG: CommentView getListItem");
-// This function gets automatically called with the VirtualRepeater gets rendered
-// Get the count of the all the RSS items resurned
-if (this.noStory == true) {
-enyo.log("DEBUG: getListItem: noStore == true was trapped");
-this.$.commentItem.setSwipeable(false);
-this.$.commentRowGroup.setCaption("No comments found!");
-this.$.commentText.setContent("There are no comments on this yet. Why don't you add one? Or not. Whatever.");
+	getListItem: function(inSender, inIndex){
 
-//this.commentResults = [];
-return true;
-this.noStory = false;
-}
-
-var count = this.commentResults[inIndex];
-// If the count is > 0
-if (count && this.noStory == false) {
-	enyo.log("FUCK YOU");
-var score = parseInt(count.data.ups) - parseInt(count.data.downs);
-this.$.commentRowGroup.setCaption("Comment by: " + count.data.author + ", Score: " + score);
-this.$.commentText.setContent(count.data.body);//count.data.body);
-// Returning true is how the item list knows to keep iterating
-if ( count.data.likes == true) {
-// thing to do if upvoted
-this.$.storyVoteStatus.setStyle("color: #FCA044; font-size: 12px");
-this.$.storyVoteStatus.setContent("You upvoted!")
-}
-if (count.data.likes == false) {
-//thing to do if downvoted
-this.$.storyVoteStatus.setStyle("color: #5797FF; font-size: 12px");
-this.$.storyVoteStatus.setContent("You downvoted!");
-}
-return true;
-}
-}
+		var count = this.commentResults[inIndex];
+		// If the count is > 0
+		if (count && this.noStory == false) {
+			enyo.log("FUCK YOU");
+			var score = parseInt(count.data.ups) - parseInt(count.data.downs);
+			this.$.commentRowGroup.setCaption("Comment by: " + count.data.author + ", Score: " + score);
+			this.$.commentText.setContent(count.data.body);//count.data.body);
+			// Returning true is how the item list knows to keep iterating
+			if ( count.data.likes == true) {
+				// thing to do if upvoted
+				this.$.storyVoteStatus.setStyle("color: #FCA044; font-size: 12px");
+				this.$.storyVoteStatus.setContent("You upvoted!")
+			}
+			if (count.data.likes == false) {
+				//thing to do if downvoted
+				this.$.storyVoteStatus.setStyle("color: #5797FF; font-size: 12px");
+				this.$.storyVoteStatus.setContent("You downvoted!");
+			}
+		return true;
+		}
+	}
 
 })

@@ -42,7 +42,9 @@ enyo.kind({
 		isLoggedIn: false,
 
 		// The default new post type. Valid values are "link" and "text"
-		newPostType: "link"
+		newPostType: "link",
+		
+		currentSubreddit: "reddit.com"
 	},
 	components: [
 
@@ -149,7 +151,7 @@ enyo.kind({
 			//The new post dialog box
 			{kind: enyo.RowGroup, caption: "Submit a comment", components: [
 				{kind: enyo.HFlexBox,  style: "width: 500px",align: "center", pack: "center",components: [
-					{kind: enyo.RichText, richContent: false, maxTextHeight: "5", style: "width: 500px", alwaysLooksFocused: true,name: "commentInputBox",  hint: "Enter your comment"},
+					{kind: enyo.Input, style: "width: 500px", alwaysLooksFocused: true,name: "commentInputBox",  hint: "Enter your comment"},
 				]},
 
 				{kind: enyo.HFlexBox, align: "center", pack: "center",components: [ 
@@ -234,6 +236,8 @@ enyo.kind({
 	openCommentPopup: function() {
 		this.$.spinScrim.show();
 		this.$.newCommentPopup.openAtCenter();
+		this.$.commentInputBox.setValue("");
+
 	},
 	hideNewCommentPopup: function() {
 		this.$.spinScrim.hide();
@@ -333,6 +337,9 @@ enyo.kind({
 		//Show the scrim and the new post box
 		this.$.spinScrim.show();
 		this.$.newPostPopup.openAtCenter();
+		this.$.newPostStoryTitle.setValue("");
+		this.$.newPostStoryContent.setValue("");
+		this.$.newPostStorySubreddit.setValue(this.currentSubreddit);
 	},
 
 	hideNewPostBox: function() {
@@ -451,10 +458,8 @@ enyo.kind({
 		//Make sure the "Hot" and "New" tabs are set correctly (because we always load hot first)
 		//And refresh the story list
 
-		//TODO
-		//TODO: all of this could be handled in a single function in leftPane that we just pass the subreddit name to
-		//TODO
 		this.showHeaderSpinner();
+		this.currentSubreddit = this.$.headerInputBox.getValue();
 		this.$.LeftPane.setCurrentSubreddit(this.$.headerInputBox.getValue());
 		this.$.LeftPane.$.uiList.punt();
 

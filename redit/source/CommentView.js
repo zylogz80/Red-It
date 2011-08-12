@@ -193,7 +193,6 @@ enyo.kind({
 	
 	
 	refreshView: function() {
-		enyo.log("DEBUG: Entered refreshView");
 		
 		this.getCommentsByPermaLink(this.commentHistory[this.commentDepth]);
 		this.$.commentList.refresh();
@@ -265,7 +264,6 @@ enyo.kind({
 
 			}
 			
-			enyo.log();
 			
 		} else {
 			tempObject = inResponse[1].data.children;
@@ -282,7 +280,6 @@ enyo.kind({
 			
 		}
 
-		enyo.log("DEBUG: COMMENTS: What is noStory? : " + this.noStory);
 
 		if ( this.noStory == false ) {
 			this.commentResults = commentObject;

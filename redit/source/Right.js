@@ -121,7 +121,6 @@ enyo.kind({
 		this.$.commentButton.setShowing(false);
 		this.$.backButton.setShowing(false);
 
-		enyo.log("DEBUG: Showing story");
 		if (this.storyStruct.is_self == false) {
 			this.$.paneControl.selectViewByName("webViewer");
 		} else {
@@ -135,7 +134,6 @@ enyo.kind({
 		this.$.commentButton.setShowing(true);
 		this.$.backButton.setShowing(true);
 
-		enyo.log("DEBUG: Showing comments");
 		this.$.paneControl.selectViewByName("commentView");	
 		this.doCompleteDataLoad();
 	},
@@ -190,9 +188,7 @@ enyo.kind({
 
 		//Update the visual representation of the story
 		this.updateStoryUI();
-		enyo.log("DEBUG: Parent ID : " + this.storyStruct.id.slice(3));
 		//this.$.commentView.getCommentsForParent(this.storyStruct.id.slice(3));
-		enyo.log("DEBUG: Left View: acceptStoryFromLeftPane : " + this.storyStruct.permalink);
 		this.$.commentView.setCurrentCommentParent(this.storyStruct.id);
 		this.$.commentView.initCommentsForStory(this.storyStruct.permalink);
 		this.$.commentView.setUserModHash(this.userModHash);

@@ -68,10 +68,7 @@ enyo.kind({
 		//Fetching the story data succeeded
 		
 		storyObject = inResponse[0].data.children;
-		//enyo.log("storyObject: " + enyo.json.stringify(storyObject));
-		//enyo.log("Author: " + storyObject[0].data.author);
-		//enyo.log("Title: " + storyObject[0].data.title);
-		//enyo.log("Text: " + storyObject[0].data.selftext_html);
+
 		
 		this.$.title.setContent(storyObject[0].data.title);
 		this.$.body.setContent(storyObject[0].data.selftext);
@@ -83,7 +80,6 @@ enyo.kind({
 	},
 	getStoryFail: function() {
 		//Getting the story details failed for some reason
-		enyo.log("DEBUG: selfPostView : Getting the story info failed");
 		
 	},
 	update: function() {

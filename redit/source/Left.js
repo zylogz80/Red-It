@@ -95,7 +95,6 @@ enyo.kind({
 		//we do this so that when the user selects another story we can change the background color of the old story back to normal
 		this.selectedRow = false;
 		// Call the function to get the stories
-		enyo.log("DEBUG: LeftView - create() - calling getStories");
 		this.$.getStories.call();
 	},
 
@@ -141,7 +140,6 @@ enyo.kind({
 	},
 	getStoriesFail: function(){
 		// Getting the stories failed for some reason
-		enyo.log("DEBUG: Getting stories failed!!!??? What?");
 		//this.$.errorScrim.show();
 		this.owner.$.spinScrim.show();
 		this.$.errorPopup.openAtCenter();

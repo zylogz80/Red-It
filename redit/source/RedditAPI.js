@@ -135,7 +135,6 @@ enyo.kind({
 		{kind: "errorPopup", name: "errorPopup"},
 	],	
 	webServiceFailure: function() {
-		enyo.log("DEBUG: Something failed");
 		this.$.errorPopup.openAtCenter();
 		
 	},
@@ -145,7 +144,6 @@ enyo.kind({
 		
 	},
 	submitReply: function(thingID, replyText, subRedditName, userModHash) {
-		enyo.log("DEBUG: Entered submitReply");
 		// Reply to a story or comment
 		this.$.replyWebService.call({thing_id: thingID, text: replyText, r: subRedditName, uh: userModHash});
 	},

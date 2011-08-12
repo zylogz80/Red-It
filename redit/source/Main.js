@@ -219,21 +219,14 @@ enyo.kind({
 ///////////////////////////////////
 	replyFailed: function() {
 		//Adding a comment failed for some reason
-		enyo.log("DEBUG: Entered replyFailed");
 	},
 	submitNewComment: function() {
-		enyo.log("DEBUG: Entered submitNewComment");
-		enyo.log("DEBUG: this.$.RightPane.$.commentView.getCurrentCommentParent() : " + this.$.RightPane.$.commentView.getCurrentCommentParent());
-		enyo.log("DEBUG: this.$.commentInputBox.getValue() : " + this.$.commentInputBox.getValue());
-		enyo.log("DEBUG: this.$.RightPane.storyStruct.reddit : " + this.$.RightPane.storyStruct.reddit);
-		enyo.log("DEBUG: this.userStruct.modHash : " + this.userStruct.modHash);
 		this.$.redditSubmitCommentService.submitReply(	this.$.RightPane.$.commentView.getCurrentCommentParent(), 
 														this.$.commentInputBox.getValue(), 
 														this.$.RightPane.storyStruct.reddit, 
 														this.userStruct.modHash);
 	},	
 	replyComplete: function() {
-		enyo.log("DEBUG: Entered replyComplete");
 		this.$.RightPane.$.commentView.refreshView();
 		this.$.LeftPane.refreshStoryList();
 		this.hideNewCommentPopup();

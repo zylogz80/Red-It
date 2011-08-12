@@ -155,8 +155,8 @@ enyo.kind({
 				]},
 
 				{kind: enyo.HFlexBox, align: "center", pack: "center",components: [ 
-					{name: "newStorySubmitButton", kind: enyo.Button, caption: "Submit Comment", onclick: "submitNewComment"},
-					{name: "newStoryCancelButton", kind: enyo.Button, caption: "Close this box", onclick: "hideNewCommentPopup"}
+					{name: "newCommentSubmitButton", kind: enyo.Button, caption: "Submit Comment", onclick: "submitNewComment"},
+					{name: "newCommentCancelButton", kind: enyo.Button, caption: "Close this box", onclick: "hideNewCommentPopup"}
 				]}				
 			
 			]}

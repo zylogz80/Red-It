@@ -254,12 +254,14 @@ enyo.kind({
 			storyObject = inResponse[0].data.children;
 			this.$.headerText.setContent(this.textCutterUpper(storyObject[0].data.title));
 			
-			if ( commentObject ) {
+			if ( commentObject == []) {
 				this.noStory = false;
 			} 	else {
 				this.noStory = true;
 
 			}
+			
+			//enyo.log(enyo.json.stringify(commentObject));
 			
 		} else {
 			tempObject = inResponse[1].data.children;
@@ -275,6 +277,8 @@ enyo.kind({
 			}
 			
 		}
+
+		enyo.log("DEBUG: COMMENTS: What is noStory? : " + this.noStory);
 
 		if ( this.noStory == false ) {
 			this.commentResults = commentObject;

@@ -175,7 +175,8 @@ enyo.kind({
 			reddit: "",
 			likes: "",
 			id : "",
-			permalink: "" };
+			permalink: "",
+			is_self: "" };
 
 		//populate the structure with values from the reddit API for the selected story
 		storyStruct.id = this.rssResults[inEvent.rowIndex].data.name;
@@ -184,6 +185,7 @@ enyo.kind({
 		storyStruct.reddit = this.rssResults[inEvent.rowIndex].data.subreddit;
 		storyStruct.likes = this.rssResults[inEvent.rowIndex].data.likes;
 		storyStruct.permalink = this.rssResults[inEvent.rowIndex].data.permalink;
+		storyStruct.is_self = this.rssResults[inEvent.rowIndex].data.is_self;
 		//If a story title is too long trucate it and append elipsis
 		if ( storyStruct.title.length > 45) {
 			storyStruct.title = storyStruct.title.substring(0,45) + "...";

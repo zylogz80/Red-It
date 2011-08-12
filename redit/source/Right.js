@@ -41,7 +41,8 @@ enyo.kind({
 			reddit: "",
 			likes: "",
 			id : "",
-			permalink: "" },
+			permalink: "",
+			is_self: "" },
 		isLoggedIn: false,
 		userModHash: ""
 	
@@ -55,10 +56,10 @@ enyo.kind({
 
 		{kind: enyo.Pane, name: "paneControl", flex: 1, components: [
 			{kind: enyo.WebView, name: "webViewer", onLoadComplete: "doCompleteDataLoad", url: "http://linkedlistcorruption.com/redit/welcome.html"},
-			//{kind: enyo.WebView, name: "commentView", url: "http://reddit.com"},
-
-
-			{kind: "readIT.commentView", name: "commentView"}
+			
+			{kind: "readIT.commentView", name: "commentView"},
+			
+			{kind: "readIT.selfPostView", name: "selfPostView"}
 
 
 		]},
@@ -123,7 +124,11 @@ enyo.kind({
 		this.$.backButton.setShowing(false);
 
 		enyo.log("DEBUG: Showing story");
-		this.$.paneControl.selectViewByName("webViewer");	
+		if (this.storyStruct.is_self == false) {
+			this.$.paneControl.selectViewByName("webViewer");
+		} else {
+			this.$.paneControl.selectViewByName("selfPostView");
+		};
 	},
 	showComments: function() {
 		this.$.footerUpButton.setShowing(false);
@@ -145,6 +150,7 @@ enyo.kind({
 		this.$.backButton.setShowing(false);
 
 		this.$.paneControl.selectViewByName("webViewer");
+		//this.$.paneControl.selectViewByName("selfPostView");
 		
 		this.$.webViewer.clearCache();
 		
@@ -169,6 +175,7 @@ enyo.kind({
 		this.storyStruct.likes = inStoryStruct.likes;
 		this.storyStruct.id = inStoryStruct.id;
 		this.storyStruct.permalink = inStoryStruct.permalink;
+		this.storyStruct.is_self = inStoryStruct.is_self;
 
 		this.$.headerStoryTab.setDisabled(false);
 		this.$.headerCommentsTab.setDisabled(false);
@@ -203,8 +210,15 @@ enyo.kind({
 		// Use this function to update the displayed story UI info
 		// such as the title, headers, footers, etc
 
-		this.$.webViewer.setUrl(this.storyStruct.url);
-
+		if (this.storyStruct.is_self == false) {
+			this.$.paneControl.selectViewByName("webViewer");
+			this.$.webViewer.setUrl(this.storyStruct.url);
+		} else {
+			this.$.selfPostView.setStoryStruct(this.storyStruct);
+			this.$.selfPostView.update();
+			this.$.paneControl.selectViewByName("selfPostView");
+			this.doCompleteDataLoad();
+		};
 		
 		if ( this.storyStruct.likes == true && this.isLoggedIn == true) {
 			this.$.footerUpButton.setDepressed(true);

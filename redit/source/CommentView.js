@@ -193,6 +193,7 @@ enyo.kind({
 	
 	
 	refreshView: function() {
+		enyo.log("DEBUG: Entered refreshView");
 		
 		this.getCommentsByPermaLink(this.commentHistory[this.commentDepth]);
 		this.$.commentList.refresh();

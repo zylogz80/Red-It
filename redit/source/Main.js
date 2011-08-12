@@ -225,6 +225,7 @@ enyo.kind({
 	replyComplete: function() {
 		enyo.log("DEBUG: Entered replyComplete");
 		this.$.RightPane.$.commentView.refreshView();
+		this.$.LeftPane.refreshStoryList();
 		this.hideNewCommentPopup();
 	},
 	openCommentPopup: function() {

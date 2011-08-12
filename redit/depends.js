@@ -26,5 +26,6 @@ enyo.depends(
 	"source/PrefHandler.js",
 	"source/CommentView.js",
 	"source/errorPopup.js",
-	"source/selfPostView.js"
+	"source/selfPostView.js",
+	"source/appMenu.js"
 	);

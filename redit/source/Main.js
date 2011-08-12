@@ -148,8 +148,8 @@ enyo.kind({
 		{name: "newCommentPopup", align: "center", kind: enyo.Popup, dismissWithClick: false, modal: true, components: [
 			//The new post dialog box
 			{kind: enyo.RowGroup, caption: "Submit a comment", components: [
-				{kind: enyo.HFlexBox, style: "width: 500px",align: "center", pack: "center",components: [
-					{kind: enyo.Input, style: "width: 500px", alwaysLooksFocused: true,name: "commentInputBox",  hint: "Enter your comment"},
+				{kind: enyo.HFlexBox,  style: "width: 500px",align: "center", pack: "center",components: [
+					{kind: enyo.RichText, richContent: false, maxTextHeight: "5", style: "width: 500px", alwaysLooksFocused: true,name: "commentInputBox",  hint: "Enter your comment"},
 				]},
 
 				{kind: enyo.HFlexBox, align: "center", pack: "center",components: [ 
@@ -159,12 +159,22 @@ enyo.kind({
 			
 			]}
 		]},
+		
+		
+		{kind: "readIT.appMenu", name: "appMenu"},
+		
 				
 		{name: "emailService", 		kind: "PalmService", 
 									service: "palm://com.palm.applicationManager/", 
 									method: "open", 
 		}
 	],
+	openAppMenuHandler: function() {
+		this.$.appMenu.open();
+	},
+	closeAppMenuHandler: function() {
+		this.$.appMenu.close();
+	},
 //Beta Feedback functions
 ///////////////////////////////////
 	submitBug: function() {

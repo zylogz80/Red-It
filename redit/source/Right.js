@@ -105,11 +105,9 @@ enyo.kind({
 	},
 	sendMessage : function(inSender, inResponse) {
 
-    var  params =  {
-		"params" : {
-			"text"     : "Found this on Reddit: " + this.storyStruct.url,
-		}
-	}  
+		var params =  {
+			"messageText": "Saw this on Reddit: " + this.storyStruct.url
+		};
 		this.$.messagingService.call({"id": "com.palm.app.messaging", "params":params});
 	},
 	shareMenuShow: function() {

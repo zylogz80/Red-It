@@ -165,9 +165,50 @@ enyo.kind({
 									method: "open", 
 		}
 	],
-	
-	replyFailed: function() {
+//Beta Feedback functions
+///////////////////////////////////
+	submitBug: function() {
+				var params =  {
+			        "recipients":[{"type": "email",
+            "contactDisplay":"Red It Bugs",
+            "role":1,
+            "value":"reditbugs@linkedlistcorruption.com"}],		
+			"summary":"Red It Beta Bug Report",
+			"text": "Thank you for electing to submit a bug report for the Red It Beta. Please fill the following fields out as accurately and completely as possible. Please Note: This form should only be used for bug reports, not for feature requests or general feedback. Bugs are mistakes or errors in already implemented functionality of Red It. If you'd like to request a feature or provide general feedback please use the 'Send Feedback' button instead. Thanks very much. <br><br>What anomolous behavior did you observe?<br>-------------------------------------------------------------------------<br><br><br>Why do you think this is a bug?<br>-------------------------------------------------------------------------<br><br><br>What steps would need to be taken to reproduce this issue?<br>-------------------------------------------------------------------------<br><br><br>What were you doing when the problem occured?<br>-------------------------------------------------------------------------<br><br><br>Have you observed this multiple times? If so, how many times have you observed it?<br>-------------------------------------------------------------------------<br><br><br>Is there any other information that may be helpful in identifying and resolving this issue?<br>-------------------------------------------------------------------------<br><br><br>May Red It's developer contact you if there are further questions about this bug?<br>-------------------------------------------------------------------------<br><br><br>Thanks again for submitting a bug report during the Red It Beta!<br>-Adam"
+		};
+		this.$.emailService.call({"id": "com.palm.app.email", "params":params});
+		this.$.spinScrim.hide();
+		this.$.betaPopup.close();
 		
+	},
+	
+	submitFeedback: function() {
+				var params =  {
+			        "recipients":[{"type": "email",
+            "contactDisplay":"Red It Feedback",
+            "role":1,
+            "value":"reditfeedback@linkedlistcorruption.com"}],		
+			"summary":"Red It Beta Feedback",
+			"text": "Thank you for electing to send feedback for the Red It Beta. Whatever you've got to say, we'd like to hear it. Please Note: This form should be used for general feedback, not bug reports. If you've encountered something you think is a bug please use the 'Bug Report' button instead. Thanks in advance.<br><br>My Feedback<br>------------------------------------------------------------------<br><br><br><br>Do you give Red It's developer permission to contact you regarding your feedback?<br>------------------------------------------------------------------<br><br><br><br>"
+		};
+		this.$.emailService.call({"id": "com.palm.app.email", "params":params});
+		this.$.spinScrim.hide();
+		this.$.betaPopup.close();
+		
+	},
+	openBetaPopup: function() {
+		
+		this.$.spinScrim.show();
+		this.$.betaPopup.openAtCenter();
+		
+	},
+//End Beta Feedback Functions
+////////////////////////////////////
+	
+//Comment related functions
+///////////////////////////////////
+	replyFailed: function() {
+		//Adding a comment failed for some reason
 		enyo.log("DEBUG: Entered replyFailed");
 	},
 	submitNewComment: function() {
@@ -176,39 +217,28 @@ enyo.kind({
 		enyo.log("DEBUG: this.$.commentInputBox.getValue() : " + this.$.commentInputBox.getValue());
 		enyo.log("DEBUG: this.$.RightPane.storyStruct.reddit : " + this.$.RightPane.storyStruct.reddit);
 		enyo.log("DEBUG: this.userStruct.modHash : " + this.userStruct.modHash);
-		// submitReply: function(thingID, replyText, subRedditName, userModHash)
 		this.$.redditSubmitCommentService.submitReply(	this.$.RightPane.$.commentView.getCurrentCommentParent(), 
 														this.$.commentInputBox.getValue(), 
 														this.$.RightPane.storyStruct.reddit, 
 														this.userStruct.modHash);
-		
 	},	
 	replyComplete: function() {
 		enyo.log("DEBUG: Entered replyComplete");
-
-		
 		this.$.RightPane.$.commentView.refreshView();
 		this.hideNewCommentPopup();
-		
 	},
 	openCommentPopup: function() {
-		
 		this.$.spinScrim.show();
 		this.$.newCommentPopup.openAtCenter();
 	},
-	
 	hideNewCommentPopup: function() {
-			this.$.spinScrim.hide();
+		this.$.spinScrim.hide();
 		this.$.newCommentPopup.close();
 		
 	},
-	
-	openBetaPopup: function() {
-		
-		this.$.spinScrim.show();
-		this.$.betaPopup.openAtCenter();
-		
-	},
+// End comment functions
+//////////////////////////////////////
+
 
 	showHeaderSpinner: function() {
 		this.$.headerSpinner.setShowing(true);
@@ -345,36 +375,6 @@ enyo.kind({
 		var userName = this.prefsStruct.userName; 
 		var password= this.prefsStruct.password; 
 		this.$.redditLoginService.submitLogin(userName, password); 
-	},
-	
-	submitBug: function() {
-				var params =  {
-			        "recipients":[{"type": "email",
-            "contactDisplay":"Red It Bugs",
-            "role":1,
-            "value":"reditbugs@linkedlistcorruption.com"}],		
-			"summary":"Red It Beta Bug Report",
-			"text": "Thank you for electing to submit a bug report for the Red It Beta. Please fill the following fields out as accurately and completely as possible. Please Note: This form should only be used for bug reports, not for feature requests or general feedback. Bugs are mistakes or errors in already implemented functionality of Red It. If you'd like to request a feature or provide general feedback please use the 'Send Feedback' button instead. Thanks very much. <br><br>What anomolous behavior did you observe?<br>-------------------------------------------------------------------------<br><br><br>Why do you think this is a bug?<br>-------------------------------------------------------------------------<br><br><br>What steps would need to be taken to reproduce this issue?<br>-------------------------------------------------------------------------<br><br><br>What were you doing when the problem occured?<br>-------------------------------------------------------------------------<br><br><br>Have you observed this multiple times? If so, how many times have you observed it?<br>-------------------------------------------------------------------------<br><br><br>Is there any other information that may be helpful in identifying and resolving this issue?<br>-------------------------------------------------------------------------<br><br><br>May Red It's developer contact you if there are further questions about this bug?<br>-------------------------------------------------------------------------<br><br><br>Thanks again for submitting a bug report during the Red It Beta!<br>-Adam"
-		};
-		this.$.emailService.call({"id": "com.palm.app.email", "params":params});
-		this.$.spinScrim.hide();
-		this.$.betaPopup.close();
-		
-	},
-	
-	submitFeedback: function() {
-				var params =  {
-			        "recipients":[{"type": "email",
-            "contactDisplay":"Red It Feedback",
-            "role":1,
-            "value":"reditfeedback@linkedlistcorruption.com"}],		
-			"summary":"Red It Beta Feedback",
-			"text": "Thank you for electing to send feedback for the Red It Beta. Whatever you've got to say, we'd like to hear it. Please Note: This form should be used for general feedback, not bug reports. If you've encountered something you think is a bug please use the 'Bug Report' button instead. Thanks in advance.<br><br>My Feedback<br>------------------------------------------------------------------<br><br><br><br>Do you give Red It's developer permission to contact you regarding your feedback?<br>------------------------------------------------------------------<br><br><br><br>"
-		};
-		this.$.emailService.call({"id": "com.palm.app.email", "params":params});
-		this.$.spinScrim.hide();
-		this.$.betaPopup.close();
-		
 	},
 	
 	loginComplete: function () {

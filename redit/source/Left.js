@@ -58,8 +58,14 @@ enyo.kind({
 									{name: "storyComma", content: ""},
 									{content: "&nbsp;"},
 									{name: "storyVoteStatus"}
+								]},
+								{kind: enyo.HFlexBox, components: [
+									{name: "storySubreddit"},
+									{content: "&nbsp;"},
+									{name: "storyNumComments"}
 								]}
 							]}
+							
 						]}
 				]}
 			]}
@@ -231,7 +237,9 @@ enyo.kind({
 			}
 			
 			this.$.storyDescription.setContent(count.data.title);
-			this.$.storyInfo.setContent("Score: "  + count.data.score + ", Submitted by: " + count.data.author);
+			this.$.storyInfo.setContent("Score: "  + count.data.score + ", Submitter: " + count.data.author);
+			this.$.storySubreddit.setContent("Subreddit: " + count.data.subreddit + ",");
+			this.$.storyNumComments.setContent(count.data.num_comments + " comments");
 			
 			if ( count.data.likes == true) {
 				// thing to do if upvoted

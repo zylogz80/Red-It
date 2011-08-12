@@ -89,7 +89,7 @@ enyo.kind({
 		// Overload the constructor. Call the inherited constructor.
 		this.inherited(arguments); 
 		// Empty array
-		this.rssResults = [];
+		this.arrayOfStories = [];
 
 		//This variable is populated with a pointer to an item in the list when it is selected
 		//we do this so that when the user selects another story we can change the background color of the old story back to normal
@@ -129,7 +129,7 @@ enyo.kind({
 	
 	getStoriesSuccess: function(inSender, inResponse) {
 		// Put the rss results into an rssResults array
-		this.rssResults = inResponse.data.children;
+		this.arrayOfStories = inResponse.data.children;
 		// Re-render the item list to fill it with the rss results
 		this.$.uiList.refresh();
 		//this.$.uiList.punt();
@@ -151,17 +151,15 @@ enyo.kind({
 	sendStoryToRightPane: function(inSender, inEvent) {
 		// The user has selected a story. We need to push the story to the right pane for display.
 
-		
+		//Fire the StartDataLoad event. Main will hear this and start the spinner.
 		this.doStartDataLoad();
 
+		//Store the index of the row we clicked on in this.selectedRow
+		//We want to know what row is selected so that we can highlight it
 		this.selectedRow = inEvent.rowIndex;
-		
-		
+
+		//Refresh the list. This will use this.selectedRow to determine what row to highligh
 		this.$.uiList.refresh();
-		
-		
-
-
 		
 		// Create a story structure to pass to the right panel
 		var storyStruct = {
@@ -176,46 +174,53 @@ enyo.kind({
 			permalink: "",
 			is_self: "" };
 
+		//The array of stories is this.arrayOfStories[] which is populated in this.getStoriesSuccess()
 		//populate the structure with values from the reddit API for the selected story
-		storyStruct.id = this.rssResults[inEvent.rowIndex].data.name;
-		storyStruct.url = this.rssResults[inEvent.rowIndex].data.url;
-		storyStruct.title = this.rssResults[inEvent.rowIndex].data.title;
-		storyStruct.reddit = this.rssResults[inEvent.rowIndex].data.subreddit;
-		storyStruct.likes = this.rssResults[inEvent.rowIndex].data.likes;
-		storyStruct.permalink = this.rssResults[inEvent.rowIndex].data.permalink;
-		storyStruct.is_self = this.rssResults[inEvent.rowIndex].data.is_self;
+		storyStruct.id = this.arrayOfStories[inEvent.rowIndex].data.name;
+		storyStruct.url = this.arrayOfStories[inEvent.rowIndex].data.url;
+		storyStruct.title = this.arrayOfStories[inEvent.rowIndex].data.title;
+		storyStruct.reddit = this.arrayOfStories[inEvent.rowIndex].data.subreddit;
+		storyStruct.likes = this.arrayOfStories[inEvent.rowIndex].data.likes;
+		storyStruct.permalink = this.arrayOfStories[inEvent.rowIndex].data.permalink;
+		storyStruct.is_self = this.arrayOfStories[inEvent.rowIndex].data.is_self;
+		storyStruct.score = this.arrayOfStories[inEvent.rowIndex].data.score;
+		storyStruct.comments = this.arrayOfStories[inEvent.rowIndex].data.num_comments;
+		
 		//If a story title is too long trucate it and append elipsis
 		if ( storyStruct.title.length > 45) {
 			storyStruct.title = storyStruct.title.substring(0,45) + "...";
 		}
 		
 		//If the story doesn't have a thumbnail grab reddit's default "no image" thumbnail
-		storyStruct.image = this.rssResults[inEvent.rowIndex].data.thumbnail;
+		storyStruct.image = this.arrayOfStories[inEvent.rowIndex].data.thumbnail;
 		if (!storyStruct.image) {
 			storyStruct.image = "http://www.reddit.com/static/noimage.png";
 		}
-		
-		storyStruct.score = this.rssResults[inEvent.rowIndex].data.score;
-		storyStruct.comments = this.rssResults[inEvent.rowIndex].data.num_comments;
-		
+
 		//After the struct is populated pass it to the right pane
+		//I know that messing with objects in the owner's $ is "wrong" and you are 
+		//supposed to use events. I just don't care. I use it where required.
+		//Events are a nice concept, and work well some places, but they create speghetti code in other places
 		this.owner.$.RightPane.setUserModHash(this.userModHash);
 		this.owner.$.RightPane.acceptStoryFromLeftPane(storyStruct);
-
 		},
 
 	setCurrentSubreddit: function(inSubreddit) {
-		
+		//Set the current subreddit and refresh the story list with hot stories in that subreddit
 		this.currentSubreddit = inSubreddit;
 		this.selectHotStories();
-		
 	},
 
 	getListItem: function(inSender, inIndex){
-		// This function gets automatically called with the VirtualRepeater gets rendered
-		// Get the count of the all the stories returned
-		var count = this.rssResults[inIndex];
-		// If the count is > 0
+		// This function gets called for each row the VirtualRepeater renders
+		// inIndex is the index number of the row we are rendering
+		
+		//Get the entry in the arrayOfStories that corrosponds to the row being rendered
+		//Note: count was a terrible variable name choice here. 
+		//I originally misunderstood and thought we were counting something.
+		var count = this.arrayOfStories[inIndex];
+
+		//Proceed-on if there is a story in the array at the current position in the repeater
 		if (count) {
 			// If the story has a thumbnail then display it
 			

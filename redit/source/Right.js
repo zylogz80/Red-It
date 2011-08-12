@@ -205,13 +205,19 @@ enyo.kind({
 		// such as the title, headers, footers, etc
 
 		if (this.storyStruct.is_self == false) {
-			this.$.paneControl.selectViewByName("webViewer");
 			this.$.webViewer.setUrl(this.storyStruct.url);
-		} else {
-			this.$.selfPostView.setStoryStruct(this.storyStruct);
-			this.$.selfPostView.update();
-			this.$.paneControl.selectViewByName("selfPostView");
-			this.doCompleteDataLoad();
+		};
+
+		if ( this.$.headerStoryTab.getDepressed() == true) {
+			if (this.storyStruct.is_self == false) {
+				this.$.paneControl.selectViewByName("webViewer");
+				this.doCompleteDataLoad();
+			} else {
+				this.$.selfPostView.setStoryStruct(this.storyStruct);
+				this.$.selfPostView.update();
+				this.$.paneControl.selectViewByName("selfPostView");
+				this.doCompleteDataLoad();
+			};
 		};
 		
 		if ( this.storyStruct.likes == true && this.isLoggedIn == true) {

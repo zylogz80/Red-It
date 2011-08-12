@@ -116,16 +116,26 @@ enyo.kind({
 		
 		this.getCommentsByPermaLink(this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3));
 		
-		if ( this.commentResults[inEvent.rowIndex].data.body.length > 70) {
-			this.$.headerText.setContent(this.commentResults[inEvent.rowIndex].data.body.substring(0,70) + "..." );
-		} else {
-			this.$.headerText.setContent(this.commentResults[inEvent.rowIndex].data.body);
-		}
+		//this.$.headerText.setContent(this.textCutterUpper(this.commentResults[inEvent.rowIndex].data.body));
 		
 		this.$.commentList.punt();
 		
 	},
-	
+
+	textCutterUpper: function(inSomeString) {
+		//Truncates (and adds elipses, or elipsises, or whatever, to) text greater than 70 chars long 
+		
+		var returnText = "";
+		
+		if ( inSomeString.length > 70) {
+			returnText = inSomeString.substring(0,70) + "...";
+		} else {
+			returnText = inSomeString;
+		}
+		
+		return returnText;
+	},
+
 	backButtonPressed: function() {
 
 		if (this.commentDepth > 0) {
@@ -165,6 +175,7 @@ enyo.kind({
 		this.commentHistory = [];
 		//Keeps track of the current selected object ID for commenting
 		this.commentIDHistory = [];
+
 		
 		this.commentDepth = 0;
 	},
@@ -237,9 +248,11 @@ enyo.kind({
 		//we use this to control when we display comments or the "no comments found" item"
 		if (this.commentDepth == 0) {
 			commentObject = inResponse[1].data.children;
+		
+			//If commentDepth == 0 then we are looking at comments on the story, not on other comments
+			//As such we need to grab the story object and extract the title for the comment header
 			storyObject = inResponse[0].data.children;
-			
-			this.$.headerText.setCaption(storyObject[0].data.body);
+			this.$.headerText.setContent(this.textCutterUpper(storyObject[0].data.title));
 			
 			if ( commentObject ) {
 				this.noStory = false;
@@ -251,6 +264,9 @@ enyo.kind({
 		} else {
 			tempObject = inResponse[1].data.children;
 			tempObject2 = tempObject[0].data.replies;		
+
+			this.$.headerText.setContent(tempObject[0].data.body);
+			
 			if ( tempObject2 ) {
 				commentObject = tempObject2.data.children;
 			} else {

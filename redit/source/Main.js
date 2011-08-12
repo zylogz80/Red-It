@@ -21,6 +21,7 @@
 //This is the mainView kind
 //The mainView comprises the main portion of the app
 //The side panes and other kinds are components of this kind
+//Hi. You should listen to Nine Inch Nails more. 
 enyo.kind({
 	name: "readIT.mainView",
 	kind: enyo.VFlexBox,

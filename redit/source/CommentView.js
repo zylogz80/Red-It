@@ -248,20 +248,23 @@ enyo.kind({
 		//we use this to control when we display comments or the "no comments found" item"
 		if (this.commentDepth == 0) {
 			commentObject = inResponse[1].data.children;
+			
+			//This is purely so we can determine if there are comments or not
+			commentCheckObject = commentObject[0];
 		
 			//If commentDepth == 0 then we are looking at comments on the story, not on other comments
 			//As such we need to grab the story object and extract the title for the comment header
 			storyObject = inResponse[0].data.children;
 			this.$.headerText.setContent(this.textCutterUpper(storyObject[0].data.title));
 			
-			if ( commentObject == []) {
-				this.noStory = false;
+			if ( commentCheckObject) {
+				this.noStory =  false;
 			} 	else {
 				this.noStory = true;
 
 			}
 			
-			//enyo.log(enyo.json.stringify(commentObject));
+			enyo.log();
 			
 		} else {
 			tempObject = inResponse[1].data.children;
@@ -283,6 +286,7 @@ enyo.kind({
 		if ( this.noStory == false ) {
 			this.commentResults = commentObject;
 			this.$.commentList.setShowing(true);
+			this.$.noCommentItem.setShowing(false);
 			this.$.commentList.refresh();
 			
 			this.$.loadingSpinner.setShowing(false);
@@ -290,6 +294,7 @@ enyo.kind({
 		}
 		if (this.noStory == true)  {
 			this.commentResults = [];
+			this.$.commentList.setShowing(false);
 			this.$.noCommentItem.setShowing(true);
 			this.$.loadingSpinner.setShowing(false);
 		}

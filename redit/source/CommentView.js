@@ -29,7 +29,6 @@ enyo.kind({
 	},
 	components: [
 		{kind: "Header", name: "commentsHeader", style: "width: 100%", components: [
-//			{kind: "Button", caption: "Back"},
 			{kind: enyo.Spinner, name: "loadingSpinner", showing: "true"},
 			{kind: enyo.VFlexBox, style: "width: 95%", components: [
 				{name: "headerMessage", content: "Viewing comments on:", style: "font-size: 12px"},				
@@ -45,8 +44,7 @@ enyo.kind({
 
 			// VirtualRepeater is a list that can be automatically filled with a number of items
 			{name: "commentList", kind: enyo.VirtualList, tapHighlight: true, onSetupRow: "getListItem", components: [
-				//{kind: enyo.Item,  name: "commentItem", layoutKind: enyo.HFlexLayout, tapHighlight: true, align: "center", components:[
-					//424242
+
 					{kind: enyo.SwipeableItem, name: "commentItem", onclick: "clickedOnItem", style: "background-image: url('icons/gray-texture.png')",confirmCaption: enyo._$L("Up Vote"), onConfirm: "commentUpVote", onCancel: "commentDownVote",cancelCaption: enyo._$L("Down Vote"), components: [
 
 						{kind: enyo.RowGroup, name: "commentRowGroup", style: "width: 95%; margin-right: 6px;", components: [	
@@ -55,14 +53,11 @@ enyo.kind({
 
 								{kind: enyo.HtmlContent, name: "commentText",style: "color: white;font-size: 14px"},
 								{name: "storyVoteStatus"}
-								//{kind: enyo.HFlexBox, pack: "center", components: [ 
-									//{kind: enyo.Button, caption: "Options", style: "font-size: 12px; text-align: left; color: #8A8A8A", onclick: "showOptions"}
-								
-								//]}
+
 							]}
 						]}
 					]}
-				//]}
+
 			]}
 			
 
@@ -105,11 +100,9 @@ enyo.kind({
 	},
 //End Comment Vote Code
 
-
 	clickedOnItem: function(inSender, inEvent) {
 		
 		this.owner.$.backButton.setDisabled(false);
-
 
 		this.commentDepth = this.commentDepth+1;
 		
@@ -117,18 +110,12 @@ enyo.kind({
 		this.$.headerText.setContent("Loading...");
 		this.$.commentList.setShowing(false);
 		
-		
 		this.commentHistory[this.commentDepth] = this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3);
 		this.commentIDHistory[this.commentDepth] = this.commentResults[inEvent.rowIndex].data.name;
 		this.currentCommentParent = this.commentIDHistory[this.commentDepth];
 		
 		this.getCommentsByPermaLink(this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3));
 		
-		
-		
-		//this.$.getCommentReplies.setUrl("http://www.reddit.com/"+this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3)+".json");
-		//this.$.getCommentReplies.call();
-
 		if ( this.commentResults[inEvent.rowIndex].data.body.length > 70) {
 			this.$.headerText.setContent(this.commentResults[inEvent.rowIndex].data.body.substring(0,70) + "..." );
 		} else {
@@ -158,13 +145,7 @@ enyo.kind({
 		}
 		
 	},
-/*	
-	showOptions: function(inSender, inEvent) {
-		
-		
-		this.$.optionMenu.openAtEvent(inSender);
-	},
-*/
+
 	create: function() {
 		this.inherited(arguments);
 		this.commentResults = [];
@@ -201,7 +182,6 @@ enyo.kind({
 	
 	
 	refreshView: function() {
-		enyo.log("DEBUG: Entered refreshView");
 		
 		this.getCommentsByPermaLink(this.commentHistory[this.commentDepth]);
 		this.$.commentList.refresh();
@@ -216,9 +196,6 @@ enyo.kind({
 			
 			this.owner.$.backButton.setDisabled(true);
 		}
-		
-			
-		enyo.log("COMMENTS: getCommentsByPermaLink : " + "http://www.reddit.com"+inPermaLink+".json");
 		
 		this.$.getCommentReplies.setUrl("http://www.reddit.com"+inPermaLink+".json");
 		
@@ -260,6 +237,9 @@ enyo.kind({
 		//we use this to control when we display comments or the "no comments found" item"
 		if (this.commentDepth == 0) {
 			commentObject = inResponse[1].data.children;
+			storyObject = inResponse[0].data.children;
+			
+			this.$.headerText.setCaption(storyObject[0].data.body);
 			
 			if ( commentObject ) {
 				this.noStory = false;
@@ -296,14 +276,11 @@ enyo.kind({
 
 	},
 
-
-
 	getListItem: function(inSender, inIndex){
 
 		var count = this.commentResults[inIndex];
 		// If the count is > 0
 		if (count && this.noStory == false) {
-			enyo.log("FUCK YOU");
 			var score = parseInt(count.data.ups) - parseInt(count.data.downs);
 			this.$.commentRowGroup.setCaption("Comment by: " + count.data.author + ", Score: " + score);
 			this.$.commentText.setContent(count.data.body);//count.data.body);

@@ -497,6 +497,7 @@ enyo.kind({
 		this.$.LeftPane.$.uiList.punt();
 		this.$.headerInputBox.setValue("");
 		
+
 	}
 		
 // End one-off functions

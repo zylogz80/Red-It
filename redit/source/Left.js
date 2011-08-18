@@ -73,7 +73,9 @@ enyo.kind({
 		{kind: enyo.Toolbar, pack: "center",  align: "center",components: [             
 			//Bottom Tool bar
 		    {kind: "ToolButtonGroup", components: [
-				{caption: "New Post", name: "newPostButton", disabled: "true", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "doNewPostPressed"}
+				{caption: "New Post", name: "newPostButton", disabled: "true", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "doNewPostPressed"},
+				{caption: "Refresh", name: "refreshButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "refreshList"}
+
 			]}
 		]},
 		// The webservice is what grabs data from the web
@@ -125,6 +127,20 @@ enyo.kind({
 		this.$.headerTopTab.setDepressed(false);
 		this.$.headerNewTab.setDepressed(true);
 
+	},
+	
+	refreshList: function() {
+		
+		//enyo.log("DEBUG: Entered refreshList")
+		//enyo.og("DEBUG: this.$.headerTopTab.getDepressed == " + 
+		
+		if ( this.$.headerTopTab.getDepressed() == true) {
+			this.selectHotStories();
+		};
+		
+		if ( this.$.headerNewTab.getDepressed() == true) {
+			this.selectNewStories();
+		};
 	},
 	
 	getStoriesSuccess: function(inSender, inResponse) {

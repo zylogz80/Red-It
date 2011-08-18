@@ -57,7 +57,7 @@ enyo.kind({
 			{kind: enyo.Image, src: "icons/red-it-nobg-48.png", style: "padding-right: 10px;"},
 			{kind: enyo.Spacer},
 			{kind: enyo.Spinner, name: "headerSpinner", showing: "false"},
-			//{kind: enyo.ToolButton, caption: "Go", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "subredditSubmit"},
+			{kind: enyo.ToolButton, caption: "Home", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "goHome"},
 			{kind: enyo.ToolInput, name: "headerInputBox", hint: "Enter subreddit name", style: "width: 400px", onkeypress: "trapEnterKey"},
 			//{kind: enyo.ToolButton, icon: "icons/beta.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", style: "align: center", align: "center", pack: "center", onclick: "openBetaPopup"},
 
@@ -488,8 +488,17 @@ enyo.kind({
 			this.subredditSubmit();
 		
 		};
+	},
+	
+	goHome: function() {
+		this.showHeaderSpinner();
+		this.currentSubreddit = "";
+		this.$.LeftPane.setCurrentSubreddit("");
+		this.$.LeftPane.$.uiList.punt();
+		this.$.headerInputBox.setValue("");
 		
 	}
+		
 // End one-off functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 });

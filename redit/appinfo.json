@@ -1,6 +1,6 @@
 {
 	"id": "com.adrew.redit",
-	"version": "0.9.1",
+	"version": "1.0.0",
 	"vendor": "Adam R. Drew",
 	"type": "web",
 	"main": "index.html",

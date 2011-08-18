@@ -5,6 +5,6 @@
 	"type": "web",
 	"main": "index.html",
 	"title": "Red It",
-	"icon": "icons/beta-red-it-nobg-64.png",
+	"icon": "icons/red-it-nobg-64.png",
 	"uiRevision": 2
 }

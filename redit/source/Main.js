@@ -458,13 +458,31 @@ enyo.kind({
 		//Make sure the "Hot" and "New" tabs are set correctly (because we always load hot first)
 		//And refresh the story list
 
-		this.showHeaderSpinner();
-		this.currentSubreddit = this.$.headerInputBox.getValue();
-		this.$.LeftPane.setCurrentSubreddit(this.$.headerInputBox.getValue());
-		this.$.LeftPane.$.uiList.punt();
+		 if ( this.parseInput(this.$.headerInputBox.getValue() ) == true) { 
+			this.showHeaderSpinner();
+			this.currentSubreddit = this.$.headerInputBox.getValue();
+			this.$.LeftPane.setCurrentSubreddit(this.$.headerInputBox.getValue());
+			this.$.LeftPane.$.uiList.punt();
+		} else {
+			
+			this.$.headerInputBox.setValue("");
+			this.$.headerInputBox.setHint("Enter a valid subreddit name. No funny stuff.");
+			
+		}
 
 
 	},
+	
+	parseInput: function(stringToParse) {
+		
+		var regExp = /^([a-zA-Z0-9_-]+)$/;
+		if(regExp.test(stringToParse)==false)
+		{
+			return false;
+		}
+		return true;
+		
+	},	
 	savePrefs: function() {
 		//Send the contents of the preferences struct to the prefsHandler for storage in the cookie
 		this.$.prefsHandler.setPrefs(this.prefsStruct);

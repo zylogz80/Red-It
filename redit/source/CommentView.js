@@ -54,6 +54,7 @@ enyo.kind({
 								{kind: enyo.HtmlContent, name: "commentText",style: "color: white;font-size: 14px"},
 								{kind: enyo.HFlexBox, components: [
 									{name: "storyVoteStatus"},
+									{content: "&nbsp;"},
 									{name: "commentReplyStatus"}
 								]}
 							]}
@@ -326,13 +327,13 @@ enyo.kind({
 			if ( count.data.likes == true) {
 				// thing to do if upvoted
 				this.$.storyVoteStatus.setStyle("color: #FCA044; font-size: 12px");
-				this.$.storyVoteStatus.setContent("You upvoted!&nbsp;");
+				this.$.storyVoteStatus.setContent("You upvoted!");
 				return true;
 			}
 			if (count.data.likes == false) {
 				//thing to do if downvoted
 				this.$.storyVoteStatus.setStyle("color: #5797FF; font-size: 12px");
-				this.$.storyVoteStatus.setContent("You downvoted!&nbsp;");
+				this.$.storyVoteStatus.setContent("You downvoted!");
 				return true;
 			} else {
 				

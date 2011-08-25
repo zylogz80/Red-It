@@ -56,7 +56,7 @@ enyo.kind({
 								{kind: enyo.HFlexBox, components: [
 									{name: "storyInfo" },
 									{name: "storyComma", content: ""},
-									{content: "&nbsp;"},
+									{content: ""},
 									{name: "storyVoteStatus"}
 								]},
 								{kind: enyo.HFlexBox, components: [

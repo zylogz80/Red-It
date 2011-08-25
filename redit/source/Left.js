@@ -66,15 +66,22 @@ enyo.kind({
 								]}
 							]}
 							
+							
 						]}
+						
 				]}
+				
+				
 			]}
-		]},
+			
+			
+		]},  
 		{kind: enyo.Toolbar, pack: "center",  align: "center",components: [             
 			//Bottom Tool bar
 		    {kind: "ToolButtonGroup", components: [
 				{caption: "New Post", name: "newPostButton", disabled: "true", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "doNewPostPressed"},
-				{caption: "Refresh", name: "refreshButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "refreshList"}
+				{caption: "Refresh", name: "refreshButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "refreshList"},
+				{caption: "Load More", name: "loadMoreButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadMore"}
 
 			]}
 		]},
@@ -90,14 +97,42 @@ enyo.kind({
 	create: function() {
 		// Overload the constructor. Call the inherited constructor.
 		this.inherited(arguments); 
-		// Empty array
+		// Empty arrays for stories and the ID of the next set of stories
 		this.arrayOfStories = [];
+		this.moreStoriesID = "";
 
 		//This variable is populated with a pointer to an item in the list when it is selected
 		//we do this so that when the user selects another story we can change the background color of the old story back to normal
 		this.selectedRow = false;
 		// Call the function to get the stories
 		this.$.getStories.call();
+	},
+
+	loadMore: function() {
+		//This function gets called when the user taps the "Load More" button
+		//This function goes out and gets more stories in the subreddit
+		//Apparantly not everyone has Reddit set to send 100 stories per page :P N00Bs
+		
+		//Fetch more on front page
+		//http://www.reddit.com/.json?count=100&after=t3_jt3us
+		if (this.currentSubreddit == "") {
+			//Code to grab more stories for front page
+			if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new&after="+this.moreStoriesID); };
+			if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json?after="+this.moreStoriesID); };
+
+		}
+		
+		//Fetch more in a subreddit
+		//http://www.reddit.com/r/Palm/.json?count=100&after=t3_gta2x
+		if (this.currentSubreddit != "") {
+			//Code to grab more stories for subreddit
+			if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new&after="+this.moreStoriesID); };
+			if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json?after="+this.moreStoriesID); };
+		}
+		
+		this.refreshStoryList();
+		this.$.uiList.punt();
+		
 	},
 
 	refreshStoryList: function() {
@@ -144,8 +179,25 @@ enyo.kind({
 	},
 	
 	getStoriesSuccess: function(inSender, inResponse) {
-		// Put the rss results into an rssResults array
+		// Put the stories into an array
 		this.arrayOfStories = inResponse.data.children;
+		
+		// Get the "after" ID. This is what we need to go after to fetch more stories
+		var tempObject = inResponse;
+		this.moreStoriesID = inResponse.data.after;
+		
+		enyo.error("DEBUG: this.moreStoriesID = " + this.moreStoriesID);
+		
+		if (this.moreStoriesID != null) {
+			
+			this.$.loadMoreButton.setDisabled(false);
+			
+		} else {
+			
+			this.$.loadMoreButton.setDisabled(true);
+			
+		}
+				
 		// Re-render the item list to fill it with the rss results
 		this.$.uiList.refresh();
 		//this.$.uiList.punt();
@@ -235,7 +287,10 @@ enyo.kind({
 		//Note: count was a terrible variable name choice here. 
 		//I originally misunderstood and thought we were counting something.
 		var count = this.arrayOfStories[inIndex];
-
+		
+		enyo.log("DEBUG: inIndex = " + inIndex);
+		enyo.log("DEBUG: this.arrayOfStories.length = " + this.arrayOfStories.length);
+		
 		//Proceed-on if there is a story in the array at the current position in the repeater
 		if (count) {
 			// If the story has a thumbnail then display it
@@ -245,14 +300,16 @@ enyo.kind({
 			} else {
 				this.$.itemEntry.setStyle("background-color: null;");
 			}
+			
 		
-			if ( count.data.thumbnail != "" ) {
+			//Why Reddit? Why do I have to filter all these bogus images passed with relative paths? Why? IF THERE'S NOTHING THERE JUST FUCKING SEND NOTHING!
+			if ( count.data.thumbnail != "" &&  count.data.thumbnail != "/static/noimage.png" &&  count.data.thumbnail != "/static/self_default2.png") {
 				this.$.storyDescription.setStyle("width: 320px");
 				this.$.storyImage.setShowing(true);
 				this.$.storyImage.setSrc(count.data.thumbnail);
 
 			}
-			if ( count.data.thumbnail == "" ) {
+			if ( count.data.thumbnail == "" || count.data.thumbnail == "/static/noimage.png" || count.data.thumbnail == "static/self_default2.png") {
 				this.$.storyImage.setShowing(false);
 
 			}

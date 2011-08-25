@@ -52,8 +52,10 @@ enyo.kind({
 							{kind: enyo.VFlexBox, components: [
 
 								{kind: enyo.HtmlContent, name: "commentText",style: "color: white;font-size: 14px"},
-								{name: "storyVoteStatus"}
-
+								{kind: enyo.HFlexBox, components: [
+									{name: "storyVoteStatus"},
+									{name: "commentReplyStatus"}
+								]}
 							]}
 						]}
 					]}
@@ -307,17 +309,30 @@ enyo.kind({
 			var score = parseInt(count.data.ups) - parseInt(count.data.downs);
 			this.$.commentRowGroup.setCaption("Comment by: " + count.data.author + ", Score: " + score);
 			this.$.commentText.setContent(count.data.body);//count.data.body);
+			
+			if ( count.data.replies != "" ) {
+				
+				this.$.commentReplyStatus.setStyle("color: #CACACA;font-size: 12px");
+				this.$.commentReplyStatus.setContent("This comment has replies. Tap to veiw them or to reply yourself!");
+				
+			} else {
+				
+				this.$.commentReplyStatus.setStyle("color: #CACACA;font-size: 12px");
+				this.$.commentReplyStatus.setContent("No one has replied to this comment. Tap and comment to be the first!");
+				
+			};
+			
 			// Returning true is how the item list knows to keep iterating
 			if ( count.data.likes == true) {
 				// thing to do if upvoted
 				this.$.storyVoteStatus.setStyle("color: #FCA044; font-size: 12px");
-				this.$.storyVoteStatus.setContent("You upvoted!");
+				this.$.storyVoteStatus.setContent("You upvoted!&nbsp;");
 				return true;
 			}
 			if (count.data.likes == false) {
 				//thing to do if downvoted
 				this.$.storyVoteStatus.setStyle("color: #5797FF; font-size: 12px");
-				this.$.storyVoteStatus.setContent("You downvoted!");
+				this.$.storyVoteStatus.setContent("You downvoted!&nbsp;");
 				return true;
 			} else {
 				

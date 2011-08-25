@@ -84,6 +84,8 @@ enyo.kind({
 		{kind: enyo.Menu, name: "shareMenu", components: [
 			{caption: "Email", onclick: "sendEmail"},
 			{caption: "Messaging", onclick: "sendMessage"},
+			{caption: "Copy URL", onclick: "copyMessage"},
+			{caption: "Twitter", onclick: "tweetMessage"}
 		]},
 		{name: "emailService", 		kind: "PalmService", 
 									service: "palm://com.palm.applicationManager/", 
@@ -92,10 +94,31 @@ enyo.kind({
 		{name: "messagingService", 	kind: "PalmService", 
 									service: "palm://com.palm.applicationManager/", 
 									method: "open", 
+		},
+		{name: "appManager", 		kind: "PalmService", 
+									service: "palm://com.palm.applicationManager/", 
+									method: "open", 
 		}	
 		
 
 	],
+	
+	copyMessage: function() {
+		
+		enyo.dom.setClipboard(this.storyStruct.url);
+		
+	},
+	
+	tweetMessage: function() {
+		
+		var params = {
+			"url" : "http://twitter.com/intent/tweet?text="+this.storyStruct.title+"&url="+this.storyStruct.url
+		};
+		this.$.appManager.call({"id": "com.palm.app.browser", "params":params});
+		
+		//http://twitter.com/intent/tweet?text=TEXT_HERE&url=http://example.com
+	},	
+	
 	sendEmail : function(inSender, inResponse) {
 		var params =  {
 			"summary":"I found this on Reddit with Red It for webOS. Check it out!",

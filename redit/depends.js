@@ -27,5 +27,6 @@ enyo.depends(
 	"source/CommentView.js",
 	"source/errorPopup.js",
 	"source/selfPostView.js",
-	"source/appMenu.js"
+	"source/appMenu.js",
+	"source/redditStyles.css"
 	);

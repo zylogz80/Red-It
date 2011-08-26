@@ -48,7 +48,7 @@ enyo.kind({
 	{kind: enyo.FadeScroller, flex: 1, components: [ 
 			// VirtualRepeater is a list that can be automatically filled with a number of items
 			{name: "uiList", kind: enyo.VirtualList, tapHighlight: true, onSetupRow: "getListItem", components: [
-				{kind: enyo.Item,  name: "itemEntry", layoutKind: enyo.HFlexLayout, tapHighlight: false, onclick:"sendStoryToRightPane", align: "center", components:[
+				{kind: enyo.SwipableItem,  name: "itemEntry", layoutKind: enyo.HFlexLayout, tapHighlight: false, onclick:"sendStoryToRightPane", align: "center", components:[
 						{name: "storyImage", kind: enyo.Image, style: "margin-right: 8px;height: 48px; width: 48px;", showing: false, src:""},
 						{kind: enyo.VFlexBox, components: [
 							{name: "storyDescription"},

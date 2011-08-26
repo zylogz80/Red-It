@@ -68,16 +68,16 @@ enyo.kind({
 			// Bottom tool bar
 			{kind: enyo.GrabButton, slidingHandler: true},         
 			{kind: enyo.RadioGroup, components: [
-				{name:"footerUpButton", caption: "Up", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "doUpVote", depressed: false},
-				{name:"footerDownButton",caption: "Down", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "doDownVote", depressed: false}
+				{name:"footerUpButton", kind: enyo.radioButton, icon: "icons/iconset/upboat.png",className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "doUpVote", depressed: false},
+				{name:"footerDownButton",kind: enyo.radioButton, icon: "icons/iconset/downboat.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "doDownVote", depressed: false},
 			]},
 			
-			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "shareButton", disabled: "true", caption: "Share", onclick: "shareMenuShow"},
+			{kind: enyo.toolButton, icon: "icons/iconset/share.png", name: "shareButton", disabled: "true", onclick: "shareMenuShow"},
 
-			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "backButton", disabled: "true", showing: "false", caption: "Previous Comment", onclick: "backButtonPressed"},
+			{kind: enyo.toolButton, icon: "icons/iconset/back.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "backButton", disabled: "true", showing: "false", onclick: "backButtonPressed"},
 
 			
-			{kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "commentButton", disabled: "true", showing: "false", caption: "Add Comment", onclick: "doNewCommentPressed"}
+			{kind: enyo.toolButton, icon: "icons/iconset/comment.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "commentButton", disabled: "true", showing: "false",  onclick: "doNewCommentPressed"}
 			
 			
 			]},

@@ -78,12 +78,12 @@ enyo.kind({
 		]},  
 		{kind: enyo.Toolbar, pack: "center",  align: "center",components: [             
 			//Bottom Tool bar
-		    {kind: "ToolButtonGroup", components: [
-				{caption: "New Post", name: "newPostButton", disabled: "true", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "doNewPostPressed"},
-				{caption: "Refresh", name: "refreshButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "refreshList"},
-				{caption: "Load More", name: "loadMoreButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadMore"}
+//		    {kind: "ToolButtonGroup", components: [
+				{kind: enyo.toolButton, icon: "icons/iconset/new-post.png", name: "newPostButton", disabled: "true", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "doNewPostPressed"},
+				{kind: enyo.toolButton, icon: "icons/iconset/refresh.png", name: "refreshButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "refreshList"},
+				{kind: enyo.toolButton, icon: "icons/iconset/next.png", name: "loadMoreButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadMore"}
 
-			]}
+//			]}
 		]},
 		// The webservice is what grabs data from the web
 		{kind: enyo.WebService, 

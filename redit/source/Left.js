@@ -48,7 +48,7 @@ enyo.kind({
 	{kind: enyo.FadeScroller, flex: 1, components: [ 
 			// VirtualRepeater is a list that can be automatically filled with a number of items
 			{name: "uiList", kind: enyo.VirtualList, tapHighlight: true, onSetupRow: "getListItem", components: [
-				{kind: enyo.SwipableItem,  name: "itemEntry", layoutKind: enyo.HFlexLayout, tapHighlight: false, onclick:"sendStoryToRightPane", align: "center", components:[
+				{kind: enyo.SwipeableItem,  name: "itemEntry", layoutKind: enyo.HFlexLayout, tapHighlight: false, onclick:"sendStoryToRightPane", align: "center", confirmCaption: enyo._$L("Up Vote"), onConfirm: "storyUpVote", onCancel: "storyDownVote",cancelCaption: enyo._$L("Down Vote"), components:[
 						{name: "storyImage", kind: enyo.Image, style: "margin-right: 8px;height: 48px; width: 48px;", showing: false, src:""},
 						{kind: enyo.VFlexBox, components: [
 							{name: "storyDescription"},
@@ -79,7 +79,7 @@ enyo.kind({
 		{kind: enyo.Toolbar, pack: "center",  align: "center",components: [             
 			//Bottom Tool bar
 //		    {kind: "ToolButtonGroup", components: [
-				{kind: enyo.toolButton, icon: "icons/iconset/new-post.png", name: "newPostButton", disabled: "true", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "doNewPostPressed"},
+				{kind: enyo.toolButton, icon: "icons/iconset/new-card.png", name: "newPostButton", disabled: "true", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "doNewPostPressed"},
 				{kind: enyo.toolButton, icon: "icons/iconset/refresh.png", name: "refreshButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "refreshList"},
 				{kind: enyo.toolButton, icon: "icons/iconset/next.png", name: "loadMoreButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadMore"}
 
@@ -92,8 +92,23 @@ enyo.kind({
 			onSuccess:"getStoriesSuccess",
 			timeout: "30000", 
 			onFailure:"getStoriesFail"
-		}
+		},
+		{kind: "readIT.RedditAPI", name: "redditVoteService", onPostDataComplete: "voteComplete"},
+
 	],
+	storyUpVote: function(inSender, inIndex) {
+		storyID = this.arrayOfStories[inIndex].data.name;
+		this.$.redditVoteService.submitVote(storyID, "1", this.userModHash);
+		this.refreshStoryList();
+		
+		
+	},
+	storyDownVote: function(inSender, inIndex) {
+		storyID = this.arrayOfStories[inIndex].data.name;
+		this.$.redditVoteService.submitVote(storyID, "-1", this.userModHash);		
+		this.refreshStoryList();
+	},
+
 	create: function() {
 		// Overload the constructor. Call the inherited constructor.
 		this.inherited(arguments); 

@@ -22,14 +22,25 @@ enyo.kind({
 	kind: enyo.AppMenu, 
 	name: "readIT.appMenu", 
 	
+	events: {
+		
+		onSelectIconButtons: "",
+		onSelectTextButtons: ""
+		
+		
+	},
+	
 	components: [
-	
-		{kind: enyo.Scrim, name: "theScrim"},
-	
+		
 		{caption: "About Red It", onclick: "showAbout"},
 		{caption: "Help", onclick: "showHelp"},
 		{caption: "Red It Code", onclick: "showCode"},
 		{caption: "Email the Developer", onclick: "showSupport"},
+		{caption: "Button Style", components: [
+			{caption: "Icons", onclick: "doSelectIconButtons"},
+			{caption: "Text", onclick: "doSelectTextButtons"}
+		
+		]},
 		
 		{name: "appManager", 		kind: "PalmService", 
 									service: "palm://com.palm.applicationManager/", 

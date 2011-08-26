@@ -47,6 +47,7 @@ enyo.kind({
 		currentSubreddit: "reddit.com"
 	},
 	components: [
+	
 
 
 
@@ -57,20 +58,39 @@ enyo.kind({
 			{kind: enyo.Image, src: "icons/red-it-nobg-48.png", style: "padding-right: 10px;"},
 			{kind: enyo.Spacer},
 			{kind: enyo.Spinner, name: "headerSpinner", showing: "false"},
-			{kind: enyo.ToolButton, icon: "icons/iconset/home.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "goHome"},
-			{kind: enyo.ToolInput, name: "headerInputBox", hint: "Enter subreddit name", style: "width: 400px", onkeypress: "trapEnterKey"},
+			{kind: enyo.ToolButton, name: "homeButton", icon: "icons/iconset/home.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "goHome"},
+			{kind: enyo.ToolInput, selectAllOnFocus: "true", name: "headerInputBox", hint: "Enter subreddit name", style: "width: 400px", onkeypress: "trapEnterKey"},
 			//{kind: enyo.ToolButton, icon: "icons/beta.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", style: "align: center", align: "center", pack: "center", onclick: "openBetaPopup"},
-
+			{kind: enyo.ToolButton, name: "bookmarkButton", icon: "icons/iconset/bookmarks.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "openBookmarks"},
 
 			{kind: enyo.Spacer},
 			{name: "headerLoginButton", kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark, enyo-radiobutton-dark", caption: "Login", onclick: "openLoginPopup"}
 		]},
+
+
+
 
 		{kind: enyo.SlidingPane, flex: 1, components: [
 			//Sliding panes
 			{name: "LeftPane", style: "width: 400px", kind: "readIT.leftView", onSelectedStory: "selectedStory", onNewPostPressed: "showNewPostBox", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
 			{name: "RightPane", flex: 2,kind: "readIT.rightView", 	onResize: "resizeWebView", onUpVote: "upVote", onNewCommentPressed: "openCommentPopup", onDownVote: "downVote", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
 		]},
+
+		{kind: enyo.Toaster, flyInFrom: "right", style: "top: 0px; bottom: 0px", lazy: false, components: [
+			{className: "enyo-sliding-view-shadow"},
+					{name: "bookmarkList",lazy: false, kind: enyo.VirtualList, tapHighlight: true, onSetupRow: "getBookmarkItems", components: [
+						{kind: enyo.Item,lazy: false, name: "bookmarkItem", layoutKind: enyo.VFlexLayout, tapHighlight: false, onClick: "selectedBookmark", components: [
+							{kind: enyo.RowGroup,lazy: false, name: "commentRowGroup", style: "width: 95%; margin-right: 6px;", components: [	
+								//{kind: enyo.Button, caption: "Derp"},
+								{content: "", name: "bookmarkTitle"},
+								{content: "", name: "bookmarkDescription", style: "font-size: 12px; text-align: left; color: #8A8A8A"}
+							]}
+						]}
+					]}
+				
+		
+		]},
+
 
 		//Reddit API services
 		//These are all different instances of the custom readIT.RedditAPI kind
@@ -163,20 +183,96 @@ enyo.kind({
 		]},
 		
 		
-		{kind: "readIT.appMenu", name: "appMenu"},
+		{kind: "readIT.appMenu", name: "appMenu", onSelectIconButtons: "setIconButtons", onSelectTextButtons: "setTextButtons"},
 		
 				
 		{name: "emailService", 		kind: "PalmService", 
 									service: "palm://com.palm.applicationManager/", 
 									method: "open", 
-		}
+		},
+		
+		{kind: enyo.WebService, 
+			url: "http://www.reddit.com/reddits/mine.json", 
+			name: "getBookmarks", 
+			onSuccess:"getBookmarksSuccess",
+			timeout: "30000", 
+			onFailure:"replyFailed"
+		},
 	],
+	
+//App Menu Related Functions
+///////////////////////////////////////////
+	setIconButtons: function() {
+		//Intercept the onSelectIconButtons event from the appMenu
+		//Set all of the buttons in the app to use icons
+
+		//Main
+		this.$.bookmarkButton.setCaption("");		
+		this.$.homeButton.setCaption("");
+		this.$.bookmarkButton.setIcon("icons/iconset/bookmarks.png");
+		this.$.homeButton.setIcon("icons/iconset/home.png");
+		
+		//Left
+		this.$.LeftPane.$.newPostButton.setIcon("icons/iconset/new-card.png");
+		this.$.LeftPane.$.refreshButton.setIcon("icons/iconset/refresh.png");
+		this.$.LeftPane.$.loadMoreButton.setIcon("icons/iconset/next.png");
+		this.$.LeftPane.$.newPostButton.setCaption("");
+		this.$.LeftPane.$.refreshButton.setCaption("");
+		this.$.LeftPane.$.loadMoreButton.setCaption("");
+		
+		//Right
+		this.$.RightPane.$.footerUpButton.setIcon("icons/iconset/upboat.png");
+		this.$.RightPane.$.footerDownButton.setIcon("icons/iconset/downboat.png");
+		this.$.RightPane.$.shareButton.setIcon("icons/iconset/share.png");
+		this.$.RightPane.$.commentButton.setIcon("icons/iconset/comment.png");
+		this.$.RightPane.$.backButton.setIcon("icons/iconset/back.png");
+		this.$.RightPane.$.footerUpButton.setCaption("");
+		this.$.RightPane.$.footerDownButton.setCaption("");
+		this.$.RightPane.$.shareButton.setCaption("");
+		this.$.RightPane.$.commentButton.setCaption("");
+		this.$.RightPane.$.backButton.setCaption("");	
+		
+	},
+	
+	setTextButtons: function() {
+		//Intercept the onSelectTextButtons event from the appMenu
+		//Set all of the buttons in the app to use text
+
+		//Main
+		this.$.bookmarkButton.setIcon("");
+		this.$.homeButton.setIcon("");
+		this.$.bookmarkButton.setCaption("Bookmarks");
+		this.$.homeButton.setCaption("Home");
+
+		//Left
+		this.$.LeftPane.$.newPostButton.setIcon("");
+		this.$.LeftPane.$.refreshButton.setIcon("");
+		this.$.LeftPane.$.loadMoreButton.setIcon("");
+		this.$.LeftPane.$.newPostButton.setCaption("New Post");
+		this.$.LeftPane.$.refreshButton.setCaption("Refresh");
+		this.$.LeftPane.$.loadMoreButton.setCaption("Next Page");
+		
+		//Right
+		this.$.RightPane.$.footerUpButton.setIcon("");
+		this.$.RightPane.$.footerDownButton.setIcon("");
+		this.$.RightPane.$.shareButton.setIcon("");
+		this.$.RightPane.$.commentButton.setIcon("");
+		this.$.RightPane.$.backButton.setIcon("");
+		this.$.RightPane.$.footerUpButton.setCaption("Up Vote");
+		this.$.RightPane.$.footerDownButton.setCaption("Down Vote");
+		this.$.RightPane.$.shareButton.setCaption("Share");
+		this.$.RightPane.$.commentButton.setCaption("Add Comment");
+		this.$.RightPane.$.backButton.setCaption("Back a Level");
+	},
 	openAppMenuHandler: function() {
 		this.$.appMenu.open();
 	},
 	closeAppMenuHandler: function() {
 		this.$.appMenu.close();
 	},
+//End App Menu Functions
+////////////////////////////////////////////	
+
 //Beta Feedback functions
 ///////////////////////////////////
 	submitBug: function() {
@@ -260,6 +356,8 @@ enyo.kind({
 
 		//Finish inheritence from our parent kind
 		this.inherited(arguments);
+		
+		this.bookmarkArray = [];
 
 		this.prefsStruct = {
 			savedLogin: false,
@@ -516,7 +614,52 @@ enyo.kind({
 		this.$.headerInputBox.setValue("");
 		
 
+	},
+	
+	openBookmarks: function() {
+		
+		this.$.getBookmarks.call()
+		enyo.error("DEBUG: entered openBookmarks");
+		
+	},
+	
+	getBookmarksSuccess: function(inSender, inResponse) {
+		
+		enyo.error("DEBUG: entered getBookmarksSuccess");
+		this.bookmarkArray = inResponse.data.children;
+		
+		enyo.error("DEBUG: bookmarkArray is : " + this.bookmarkArray);
+
+		
+		
+		this.$.toaster.open();		
+		
+		
+		this.$.bookmarkList.refresh();
+		
+		
+	},
+	
+	getBookmarkItems: function(inSender, inIndex) {
+		
+		enyo.error("DEBUG: entered getBookmarkItems");
+		
+		var currentRow = this.bookmarkArray[inIndex];
+		
+		enyo.error("DEBUG: currentRow is : " + currentRow);
+		
+		if ( currentRow ) {
+			
+			
+			this.$.bookmarkTitle.setContent(currentRow.data.title);
+			this.$.bookmarkDescription.setContent(currentRow.data.description);
+			
+			return true;
+			
+		}
+		
 	}
+	
 		
 // End one-off functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////

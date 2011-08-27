@@ -92,7 +92,7 @@ enyo.kind({
 			]},
 			{kind: enyo.Toolbar, name: "searchBar", showing: false, align: "center", pack: "center", components: [
 				{kind: enyo.ToolInput, selectAllOnFocus: "true", name: "subredditSearchBox", hint: "Subreddit search", onkeypress: "trapSearchEnterKey"},
-				{kind: enyo.ToolButton, icon: "icons/iconset/topbar-search-icon.png", onclick: "searchSubreddits"}
+				//{kind: enyo.ToolButton, icon: "icons/iconset/topbar-search-icon.png", onclick: "searchSubreddits"}
 
 			]},
 	
@@ -237,6 +237,8 @@ enyo.kind({
 		this.$.allSubredditsButton.setCaption("");
 		this.$.loadPrevSubredditsPageButton.setCaption("");
 		this.$.loadNextSubredditsPageButton.setCaption("");
+		this.$.searchSubredditsButton.setCaption("");
+		this.$.searchSubredditsButton.setIcon("icons/iconset/topbar-search-icon.png");
 		this.$.loadPrevSubredditsPageButton.setIcon("icons/iconset/back.png");
 		this.$.loadNextSubredditsPageButton.setIcon("icons/iconset/next.png");
 		this.$.favoriteSubredditsButton.setIcon("icons/iconset/fav-subreddits.png");
@@ -280,6 +282,8 @@ enyo.kind({
 		this.$.allSubredditsButton.setIcon("");	
 		this.$.loadPrevSubredditsPageButton.setCaption("Previous");
 		this.$.loadNextSubredditsPageButton.setCaption("Next");
+		this.$.searchSubredditsButton.setCaption("Search");
+		this.$.searchSubredditsButton.setIcon("");
 		this.$.loadPrevSubredditsPageButton.setIcon("");
 		this.$.loadNextSubredditsPageButton.setIcon("");
 		this.$.favoriteSubredditsButton.setCaption("Favs");

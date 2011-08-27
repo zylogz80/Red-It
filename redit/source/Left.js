@@ -123,6 +123,7 @@ enyo.kind({
 		// Empty arrays for stories and the ID of the next set of stories
 		this.arrayOfStories = [];
 		this.moreStoriesID = "";
+		this.currentTab = "hot";
 
 		//This variable is populated with a pointer to an item in the list when it is selected
 		//we do this so that when the user selects another story we can change the background color of the old story back to normal
@@ -159,7 +160,7 @@ enyo.kind({
 	},
 
 	refreshStoryList: function() {
-		this.selectedRow = "notActive";
+		
 		this.$.getStories.call();
 		
 	},
@@ -168,6 +169,9 @@ enyo.kind({
 		this.doStartDataLoad();
 		if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json");}
 		if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/.json");}
+		//We want to remove the highlighted row ONLY IF we are are switching tabs, otherwise we want to leave the highlighted row as it
+		if ( this.currentTab != "hot" ) {  this.selectedRow = "notActive"; };
+		this.currentTab = "hot";
 		this.refreshStoryList();
 		this.$.uiList.punt();
 		this.$.headerNewTab.setDepressed(false);
@@ -180,6 +184,9 @@ enyo.kind({
 		this.doStartDataLoad();
 		if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/new.json?sort=new");}
 		if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new");}
+		//We want to remove the highlighted row ONLY IF we are are switching tabs, otherwise we want to leave the highlighted row as it
+		if ( this.currentTab != "new" ) {  this.selectedRow = "notActive"; };
+		this.currentTab = "new";
 		this.refreshStoryList();
 		this.$.uiList.punt();
 		this.$.headerTopTab.setDepressed(false);
@@ -296,6 +303,7 @@ enyo.kind({
 
 	setCurrentSubreddit: function(inSubreddit) {
 		//Set the current subreddit and refresh the story list with hot stories in that subreddit
+		this.selectedRow = "notActive";
 		this.currentSubreddit = inSubreddit;
 		this.selectHotStories();
 	},

@@ -208,9 +208,7 @@ enyo.kind({
 		// Get the "after" ID. This is what we need to go after to fetch more stories
 		var tempObject = inResponse;
 		this.moreStoriesID = inResponse.data.after;
-		
-		enyo.error("DEBUG: this.moreStoriesID = " + this.moreStoriesID);
-		
+				
 		if (this.moreStoriesID != null) {
 			
 			this.$.loadMoreButton.setDisabled(false);
@@ -310,9 +308,6 @@ enyo.kind({
 		//Note: count was a terrible variable name choice here. 
 		//I originally misunderstood and thought we were counting something.
 		var count = this.arrayOfStories[inIndex];
-		
-		enyo.log("DEBUG: inIndex = " + inIndex);
-		enyo.log("DEBUG: this.arrayOfStories.length = " + this.arrayOfStories.length);
 		
 		//Proceed-on if there is a story in the array at the current position in the repeater
 		if (count) {

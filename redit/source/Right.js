@@ -243,6 +243,16 @@ enyo.kind({
 				this.doCompleteDataLoad();
 			};
 		};
+
+		if ( this.$.headerStoryTab.getDepressed() == false) {
+			if (this.storyStruct.is_self == false) {
+				this.doCompleteDataLoad();
+			} else {
+				this.$.selfPostView.setStoryStruct(this.storyStruct);
+				this.$.selfPostView.update();
+				this.doCompleteDataLoad();
+			};
+		};
 		
 		if ( this.storyStruct.likes == true && this.isLoggedIn == true) {
 			this.$.footerUpButton.setDepressed(true);

@@ -505,7 +505,6 @@ enyo.kind({
 		//Set the isLoggedIn properties of all of our kinds
 		//Enable the new post button; we're logged in so posting is allowed now
 		this.userStruct = this.$.redditLoginService.getUser(); //Populate the user structure with the user data from the Reddit API
-		enyo.log("DEBUG: userStruct is " + enyo.json.stringify(this.userStruct));
 		
 		this.$.headerLoginButton.setCaption(this.userStruct.name); //Set the caption of the header button to the user name
 		
@@ -640,16 +639,13 @@ enyo.kind({
 	openBookmarks: function() {
 		
 		this.$.getBookmarks.call()
-		enyo.error("DEBUG: entered openBookmarks");
 		
 	},
 	
 	getBookmarksSuccess: function(inSender, inResponse) {
 		
-		enyo.error("DEBUG: entered getBookmarksSuccess");
 		this.bookmarkArray = inResponse.data.children;
 		
-		enyo.error("DEBUG: bookmarkArray is : " + this.bookmarkArray);
 
 		
 		
@@ -663,11 +659,9 @@ enyo.kind({
 	
 	getBookmarkItems: function(inSender, inIndex) {
 		
-		enyo.error("DEBUG: entered getBookmarkItems");
 		
 		var currentRow = this.bookmarkArray[inIndex];
 		
-		enyo.error("DEBUG: currentRow is : " + currentRow);
 		
 		if ( currentRow ) {
 			

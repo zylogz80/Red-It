@@ -229,7 +229,7 @@ enyo.kind({
 		this.$.loadPrevSubredditsPageButton.setCaption("");
 		this.$.loadNextSubredditsPageButton.setCaption("");
 		this.$.loadPrevSubredditsPageButton.setIcon("icons/iconset/back.png");
-		this.$.loadNextSubredditsPageButton.setIcon("icons/iconset/back.png");
+		this.$.loadNextSubredditsPageButton.setIcon("icons/iconset/next.png");
 		this.$.favoriteSubredditsButton.setIcon("icons/iconset/fav-subreddits.png");
 		this.$.allSubredditsButton.setIcon("icons/iconset/all-subreddits.png");		
 		this.$.bookmarkButton.setIcon("icons/iconset/bookmarks.png");
@@ -492,18 +492,31 @@ enyo.kind({
 		// Gets the story struct from the story that is loaded on the right pane
 		// and sends that to the Reddit API for an up vote
 		this.storyStruct = this.$.RightPane.getStoryStruct();
-		this.$.redditUpVoteService.submitVote(	this.storyStruct.id, //Story ID 
-												"1", // Up Vote			
-												this.userStruct.modHash);//User Mod Hash
+		if (this.storyStruct.likes != true) {
+			this.$.redditUpVoteService.submitVote(	this.storyStruct.id, //Story ID 
+													"1", // Up Vote			
+													this.userStruct.modHash);//User Mod Hash
+		} else {
+			this.$.redditUpVoteService.submitVote(	this.storyStruct.id, //Story ID 
+													"0", // Up Vote			
+													this.userStruct.modHash);//User Mod Hash
+		}
 	},
 	downVote: function(){
 	// Gets the story struct from the story that is loaded on the right pane
 	// and sends that to the Reddit API for a down vote		
-	this.storyStruct = this.$.RightPane.getStoryStruct();
-		this.$.redditDownVoteService.submitVote(	this.storyStruct.id, //Story ID 
+	if (this.storyStruct.likes != false) {
+		this.storyStruct = this.$.RightPane.getStoryStruct();
+			this.$.redditDownVoteService.submitVote(	this.storyStruct.id, //Story ID 
 												"-1", // Down Vote			
 												this.userStruct.modHash);//User Mod Hash
+		} else {
+			this.$.redditUpVoteService.submitVote(	this.storyStruct.id, //Story ID 
+													"0", // Up Vote			
+													this.userStruct.modHash);//User Mod Hash
+		}		
 	},
+	
 	voteComplete: function() {
 		// Refreshes the story list after a vote
 		this.$.LeftPane.refreshStoryList();

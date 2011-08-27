@@ -69,8 +69,8 @@ enyo.kind({
 			// Bottom tool bar
 			{kind: enyo.GrabButton, slidingHandler: true},         
 			{kind: enyo.RadioGroup, components: [
-				{name:"footerUpButton", kind: enyo.radioButton, icon: "icons/iconset/upboat.png",className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "doUpVote", depressed: false},
-				{name:"footerDownButton",kind: enyo.radioButton, icon: "icons/iconset/downboat.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "doDownVote", depressed: false},
+				{name:"footerUpButton", kind: enyo.radioButton, icon: "icons/iconset/upboat.png",className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "upVote", depressed: false},
+				{name:"footerDownButton",kind: enyo.radioButton, icon: "icons/iconset/downboat.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "downVote", depressed: false},
 			]},
 			
 			{kind: enyo.toolButton, icon: "icons/iconset/share.png", name: "shareButton", disabled: "true", onclick: "shareMenuShow"},
@@ -223,6 +223,28 @@ enyo.kind({
 	activateButtons: function() {
 
 
+	},
+	
+	upVote: function() {
+		
+		if ( this.$.footerUpButton.getDepressed() == true ) {
+			
+			 this.$.footerUpButton.setDepressed(false);
+			
+		}
+		
+		this.doUpVote();
+	},
+	downVote: function() {
+		
+		if ( this.$.footerDownButton.getDepressed() == true ) {
+			
+			 this.$.footerDownButton.setDepressed(false);
+			
+		}		
+		
+		this.doDownVote();
+		
 	},
 	updateStoryUI: function(storyStruct) {
 		// Use this function to update the displayed story UI info

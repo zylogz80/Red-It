@@ -29,7 +29,8 @@ enyo.kind({
 		onDownVote: "",
 		onCompleteDataLoad: "",
 		onStartDataLoad: "",
-		onNewCommentPressed: ""
+		onNewCommentPressed: "",
+		onLoginError: ""
 	},
 	published: {
 		storyStruct: {
@@ -57,7 +58,7 @@ enyo.kind({
 		{kind: enyo.Pane, name: "paneControl", flex: 1, components: [
 			{kind: enyo.WebView, name: "webViewer", onLoadComplete: "doCompleteDataLoad", url: "http://linkedlistcorruption.com/redit/welcome.html"},
 			
-			{kind: "readIT.commentView", name: "commentView"},
+			{kind: "readIT.commentView", name: "commentView", onLoginError: "doLoginError"},
 			
 			{kind: "readIT.selfPostView", name: "selfPostView"}
 
@@ -74,10 +75,10 @@ enyo.kind({
 			
 			{kind: enyo.toolButton, icon: "icons/iconset/share.png", name: "shareButton", disabled: "true", onclick: "shareMenuShow"},
 
-			{kind: enyo.toolButton, icon: "icons/iconset/back.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "backButton", disabled: "true", showing: "false", onclick: "backButtonPressed"},
+			{kind: enyo.toolButton, icon: "icons/iconset/back.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "backButton", disabled: true, showing: false, onclick: "backButtonPressed"},
 
 			
-			{kind: enyo.toolButton, icon: "icons/iconset/comment.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "commentButton", disabled: "true", showing: "false",  onclick: "doNewCommentPressed"}
+			{kind: enyo.toolButton, icon: "icons/iconset/comment.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", name: "commentButton", disabled: true, showing: false,  onclick: "doNewCommentPressed"}
 			
 			
 			]},
@@ -199,14 +200,14 @@ enyo.kind({
 		this.$.headerStoryTab.setDisabled(false);
 		this.$.headerCommentsTab.setDisabled(false);
 		this.$.shareButton.setDisabled(false);
-		this.$.commentButton.setDisabled(false);
+		//this.$.commentButton.setDisabled(false);
 		this.$.backButton.setDisabled(false);
 
 
 		if ( this.isLoggedIn == true ) {
 			this.$.footerUpButton.setDisabled(false);
 			this.$.footerDownButton.setDisabled(false);
-			//this.$.commentButton.setDisabled(false);
+			this.$.commentButton.setDisabled(false);
 		}
 
 		//Update the visual representation of the story

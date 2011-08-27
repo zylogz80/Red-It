@@ -48,8 +48,12 @@ enyo.kind({
 	},
 	components: [
 	
-
-
+		//Simple "You need to be logged in to Reddit to do that!" popup
+		//Shown when trying to vote when not logged in
+		//I can gray-out the vote buttons on the footer but I can't to anything to the buttons under the swipable items
+		//Hence this
+		{kind: "notLoggedInPopup", name: "errorPopup", scrim: true, scrimClassName: "errorScrim"},
+		{kind: enyo.Scrim, name: "errorScrim"},
 
 
 		{kind: enyo.PageHeader, className: "enyo-header-dark", components: [
@@ -72,8 +76,8 @@ enyo.kind({
 
 		{kind: enyo.SlidingPane, flex: 1, components: [
 			//Sliding panes
-			{name: "LeftPane", style: "width: 400px", kind: "readIT.leftView", onSelectedStory: "selectedStory", onNewPostPressed: "showNewPostBox", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
-			{name: "RightPane", flex: 2,kind: "readIT.rightView", 	onResize: "resizeWebView", onUpVote: "upVote", onNewCommentPressed: "openCommentPopup", onDownVote: "downVote", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
+			{name: "LeftPane", style: "width: 400px", kind: "readIT.leftView", onSelectedStory: "selectedStory", onLoginError: "voteButNotLoggedIn",onNewPostPressed: "showNewPostBox", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
+			{name: "RightPane", flex: 2,kind: "readIT.rightView", 	onResize: "resizeWebView", onUpVote: "upVote", onLoginError: "voteButNotLoggedIn", onNewCommentPressed: "openCommentPopup", onDownVote: "downVote", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
 		]},
 
 		{kind: enyo.Toaster, flyInFrom: "right", style: "top: 0px; bottom: 0px", lazy: false, components: [
@@ -470,6 +474,12 @@ enyo.kind({
 		// Refreshes the story list after a vote
 		this.$.LeftPane.refreshStoryList();
 	},
+	
+	voteButNotLoggedIn: function() {
+		
+		this.$.errorPopup.openAtCenter();
+		
+	},
 // End vote related functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -499,6 +509,7 @@ enyo.kind({
 		this.$.spinScrim.hide(); // hide the scrim
 		this.isLoggedIn = true; 
 		this.$.RightPane.setIsLoggedIn(true);
+		this.$.RightPane.$.commentView.setIsLoggedIn(true);
 		this.$.LeftPane.setIsLoggedIn(true);
 		this.$.LeftPane.setUserModHash(this.userStruct.modHash);
 		this.$.LeftPane.$.newPostButton.setDisabled(false);

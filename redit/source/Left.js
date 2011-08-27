@@ -32,7 +32,8 @@ enyo.kind({
 		onNewPostPressed: "",
 		onSelectedStory: "",
 		onCompleteDataLoad: "",
-		onStartDataLoad: ""
+		onStartDataLoad: "",
+		onLoginError: ""
 	},
 	components: [
 			
@@ -97,16 +98,23 @@ enyo.kind({
 
 	],
 	storyUpVote: function(inSender, inIndex) {
-		storyID = this.arrayOfStories[inIndex].data.name;
-		this.$.redditVoteService.submitVote(storyID, "1", this.userModHash);
-		this.refreshStoryList();
-		
+		if ( this.isLoggedIn == true ) {	
+			storyID = this.arrayOfStories[inIndex].data.name;
+			this.$.redditVoteService.submitVote(storyID, "1", this.userModHash);
+			this.refreshStoryList();
+		} else {
+			this.doLoginError();
+		}
 		
 	},
 	storyDownVote: function(inSender, inIndex) {
-		storyID = this.arrayOfStories[inIndex].data.name;
-		this.$.redditVoteService.submitVote(storyID, "-1", this.userModHash);		
-		this.refreshStoryList();
+		if ( this.isLoggedIn == true ) {	
+			storyID = this.arrayOfStories[inIndex].data.name;
+			this.$.redditVoteService.submitVote(storyID, "-1", this.userModHash);		
+			this.refreshStoryList();
+		} else {
+			this.doLoginError();
+		}
 	},
 
 	create: function() {

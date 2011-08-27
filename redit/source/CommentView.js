@@ -27,6 +27,9 @@ enyo.kind({
 		userModHash: "",
 		currentCommentParent: ""
 	},
+	events: {
+		onLoginError: ""
+	},
 	components: [
 		{kind: "Header", name: "commentsHeader", style: "width: 100%", components: [
 			{kind: enyo.Spinner, name: "loadingSpinner", showing: "true"},
@@ -87,14 +90,27 @@ enyo.kind({
 
 //Begin Comment Vote Code	
 	commentUpVote: function(inSender, inIndex) {
-		commentID = this.commentResults[inIndex].data.name;
-		this.$.redditVoteService.submitVote(commentID, "1", this.userModHash);
 		
+		if (this.isLoggedIn == true ) {
+			commentID = this.commentResults[inIndex].data.name;
+			this.$.redditVoteService.submitVote(commentID, "1", this.userModHash);
+		} else {
+			
+			this.doLoginError();
+			
+		};
 		
 	},
 	commentDownVote: function(inSender, inIndex) {
-		commentID = this.commentResults[inIndex].data.name;
-		this.$.redditVoteService.submitVote(commentID, "-1", this.userModHash);		
+		if (this.isLoggedIn == true ) {
+
+			commentID = this.commentResults[inIndex].data.name;
+			this.$.redditVoteService.submitVote(commentID, "-1", this.userModHash);		
+		} else {
+			
+			this.doLoginError();
+			
+		};
 
 	},
 	voteComplete: function() {

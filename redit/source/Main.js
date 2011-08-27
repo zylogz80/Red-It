@@ -74,7 +74,7 @@ enyo.kind({
 		{kind: enyo.SlidingPane, flex: 1, components: [
 			//Sliding panes
 			{name: "LeftPane", style: "width: 400px", kind: "readIT.leftView", onSelectedStory: "selectedStory", onLoginError: "voteButNotLoggedIn",onNewPostPressed: "showNewPostBox", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
-			{name: "RightPane", flex: 2,kind: "readIT.rightView", 	onResize: "resizeWebView", onUpVote: "upVote", onLoginError: "voteButNotLoggedIn", onNewCommentPressed: "openCommentPopup", onDownVote: "downVote", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
+			{name: "RightPane", flex: 2,kind: "readIT.rightView", 	onResize: "resizeWebView", onUnVote: "unVote", onUpVote: "upVote", onLoginError: "voteButNotLoggedIn", onNewCommentPressed: "openCommentPopup", onDownVote: "downVote", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
 		]},
 
 		//Bookmarks Popup
@@ -492,31 +492,45 @@ enyo.kind({
 		// Gets the story struct from the story that is loaded on the right pane
 		// and sends that to the Reddit API for an up vote
 		this.storyStruct = this.$.RightPane.getStoryStruct();
-		if (this.storyStruct.likes != true) {
-			this.$.redditUpVoteService.submitVote(	this.storyStruct.id, //Story ID 
-													"1", // Up Vote			
-													this.userStruct.modHash);//User Mod Hash
-		} else {
-			this.$.redditUpVoteService.submitVote(	this.storyStruct.id, //Story ID 
-													"0", // Up Vote			
-													this.userStruct.modHash);//User Mod Hash
-		}
+		
+		this.$.redditUpVoteService.submitVote(	this.storyStruct.id, //Story ID 
+												"1", // Up Vote			
+												this.userStruct.modHash);//User Mod Hash
+			
+		this.storyStruct.likes = true;
+		this.$.RightPane.setStoryStruct(this.storyStruct);	
+
 	},
 	downVote: function(){
-	// Gets the story struct from the story that is loaded on the right pane
-	// and sends that to the Reddit API for a down vote		
-	if (this.storyStruct.likes != false) {
+		// Gets the story struct from the story that is loaded on the right pane
+		// and sends that to the Reddit API for a down vote		
+
 		this.storyStruct = this.$.RightPane.getStoryStruct();
-			this.$.redditDownVoteService.submitVote(	this.storyStruct.id, //Story ID 
-												"-1", // Down Vote			
-												this.userStruct.modHash);//User Mod Hash
-		} else {
-			this.$.redditUpVoteService.submitVote(	this.storyStruct.id, //Story ID 
-													"0", // Up Vote			
-													this.userStruct.modHash);//User Mod Hash
-		}		
+
+		this.$.redditDownVoteService.submitVote(	this.storyStruct.id, //Story ID 
+											"-1", // Down Vote			
+											this.userStruct.modHash);//User Mod Hash
+												
+		this.storyStruct.likes = false;
+		this.$.RightPane.setStoryStruct(this.storyStruct);	
+
 	},
-	
+
+	unVote: function() {
+		// Gets the story struct from the story that is loaded on the right pane
+		// and sends that to the Reddit API for a vote removal		
+		this.storyStruct = this.$.RightPane.getStoryStruct();
+
+		this.$.redditUpVoteService.submitVote(	this.storyStruct.id, //Story ID 
+												"0", // Up Vote			
+												this.userStruct.modHash);//User Mod Hash
+												
+		this.storyStruct.likes = null;
+		this.$.RightPane.setStoryStruct(this.storyStruct);	
+
+	},
+
+
 	voteComplete: function() {
 		// Refreshes the story list after a vote
 		this.$.LeftPane.refreshStoryList();

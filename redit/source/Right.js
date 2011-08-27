@@ -27,6 +27,7 @@ enyo.kind({
 	events: {
 		onUpVote:"",
 		onDownVote: "",
+		onUnVote: "",
 		onCompleteDataLoad: "",
 		onStartDataLoad: "",
 		onNewCommentPressed: "",
@@ -69,8 +70,8 @@ enyo.kind({
 			// Bottom tool bar
 			{kind: enyo.GrabButton, slidingHandler: true},         
 			{kind: enyo.RadioGroup, components: [
-				{name:"footerUpButton", kind: enyo.radioButton, icon: "icons/iconset/upboat.png",className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "upVote", depressed: false},
-				{name:"footerDownButton",kind: enyo.radioButton, icon: "icons/iconset/downboat.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "downVote", depressed: false},
+				{name:"footerUpButton", toggling: true, kind: enyo.radioButton, icon: "icons/iconset/upboat.png",className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "upVote", depressed: false},
+				{name:"footerDownButton",toggling: true,kind: enyo.radioButton, icon: "icons/iconset/downboat.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: "true", onclick: "downVote", depressed: false},
 			]},
 			
 			{kind: enyo.toolButton, icon: "icons/iconset/share.png", name: "shareButton", disabled: "true", onclick: "shareMenuShow"},
@@ -220,31 +221,40 @@ enyo.kind({
 
 
 	},
-	activateButtons: function() {
-
-
-	},
-	
 	upVote: function() {
+		//Up votes or cancels a vote
+		enyo.log("DEBUG: entered upVote");
+		enyo.log("DEBUG: this.$.footerUpButton.getDepressed() = " + this.$.footerUpButton.getDepressed());
 		
-		if ( this.$.footerUpButton.getDepressed() == true ) {
-			
+		if ( this.storyStruct.likes == true ) {
+			//If the up vote button is already deppressed then undepress it and un vote
 			 this.$.footerUpButton.setDepressed(false);
+			 enyo.log("DEBUG: doing UnVote");
+			 
+			 this.doUnVote();
 			
+		} else {
+			//If the up vote button isn't already depressed then depress it and up vote
+			this.$.footerUpButton.setDepressed(true);
+			enyo.log("DEBUG: Doing Up vote");
+			this.doUpVote();
 		}
-		
-		this.doUpVote();
 	},
 	downVote: function() {
-		
-		if ( this.$.footerDownButton.getDepressed() == true ) {
-			
+		enyo.log("DEBUG: entered downVote");
+		enyo.log("DEBUG: this.$.footerDownButton.getDepressed() = " + this.$.footerDownButton.getDepressed());
+		//Down votes or cancels a vote
+		if ( this.storyStruct.likes == false ) {
+			//If the down vote button is already deppressed then undepress it and un vote
 			 this.$.footerDownButton.setDepressed(false);
-			
-		}		
-		
-		this.doDownVote();
-		
+			 enyo.log("DEBUG: doing UnVote");
+			 this.doUnVote();
+		} else {
+			//If the down vote button isn't already depressed then depress it and down vote
+			this.$.footerDownButton.setDepressed(true);
+			enyo.log("DEBUG: Doing Down vote");
+			this.doDownVote();			
+		}	
 	},
 	updateStoryUI: function(storyStruct) {
 		// Use this function to update the displayed story UI info

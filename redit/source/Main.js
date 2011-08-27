@@ -59,7 +59,7 @@ enyo.kind({
 		{kind: enyo.PageHeader, className: "enyo-header-dark", components: [
 			// Main app header
 			// This contains the Red It logo, the go button, the subreddit bar, and the login/user button
-			{kind: enyo.Image, src: "icons/red-it-nobg-48.png", style: "padding-right: 10px;"},
+			{kind: enyo.Image, src: "icons/red-it-nobg-48.png", name: "reditIcon", style: "padding-right: 10px;"},
 			{kind: enyo.Spacer},
 			{kind: enyo.Spinner, name: "headerSpinner", showing: "false"},
 			{kind: enyo.ToolButton, name: "homeButton", icon: "icons/iconset/home.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "goHome"},
@@ -505,7 +505,17 @@ enyo.kind({
 		//Set the isLoggedIn properties of all of our kinds
 		//Enable the new post button; we're logged in so posting is allowed now
 		this.userStruct = this.$.redditLoginService.getUser(); //Populate the user structure with the user data from the Reddit API
+		enyo.log("DEBUG: userStruct is " + enyo.json.stringify(this.userStruct));
+		
 		this.$.headerLoginButton.setCaption(this.userStruct.name); //Set the caption of the header button to the user name
+		
+		if (this.userStruct.isGold == true) {
+			this.$.headerLoginButton.setCaption(this.userStruct.name);
+			this.$.reditIcon.setSrc("icons/red-it-nobg-48-gold.png");
+			
+		}
+		
+		
 		this.$.spinScrim.hide(); // hide the scrim
 		this.isLoggedIn = true; 
 		this.$.RightPane.setIsLoggedIn(true);

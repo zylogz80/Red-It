@@ -56,7 +56,7 @@ enyo.kind({
 		{kind: enyo.Scrim, name: "errorScrim"},
 
 
-		{kind: enyo.PageHeader, className: "enyo-header-dark", components: [
+		{kind: enyo.PageHeader, className: "enyo-header-dark", style: "height: 75px;",components: [
 			// Main app header
 			// This contains the Red It logo, the go button, the subreddit bar, and the login/user button
 			{kind: enyo.Image, src: "icons/red-it-nobg-48.png", name: "reditIcon", style: "padding-right: 10px;"},
@@ -71,28 +71,39 @@ enyo.kind({
 			{name: "headerLoginButton", kind: enyo.ToolButton, className: "enyo-grouped-toolbutton-dark, enyo-radiobutton-dark", caption: "Login", onclick: "openLoginPopup"}
 		]},
 
-
-
-
 		{kind: enyo.SlidingPane, flex: 1, components: [
 			//Sliding panes
 			{name: "LeftPane", style: "width: 400px", kind: "readIT.leftView", onSelectedStory: "selectedStory", onLoginError: "voteButNotLoggedIn",onNewPostPressed: "showNewPostBox", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
 			{name: "RightPane", flex: 2,kind: "readIT.rightView", 	onResize: "resizeWebView", onUpVote: "upVote", onLoginError: "voteButNotLoggedIn", onNewCommentPressed: "openCommentPopup", onDownVote: "downVote", onCompleteDataLoad: "hideHeaderSpinner", onStartDataLoad: "showHeaderSpinner"},
 		]},
 
-		{kind: enyo.Toaster, flyInFrom: "right", style: "top: 0px; bottom: 0px", lazy: false, components: [
+		//Bookmarks Popup
+		{kind: enyo.Toaster, layoutKind: enyo.VFlexLayout, flyInFrom: "right", style: "top: 0px; bottom: 0px", lazy: false, components: [
 			{className: "enyo-sliding-view-shadow"},
-					{name: "bookmarkList",lazy: false, kind: enyo.VirtualList, tapHighlight: true, onSetupRow: "getBookmarkItems", components: [
-						{kind: enyo.Item,lazy: false, name: "bookmarkItem", layoutKind: enyo.VFlexLayout, tapHighlight: false, onClick: "selectedBookmark", components: [
-							{kind: enyo.RowGroup,lazy: false, name: "commentRowGroup", style: "width: 95%; margin-right: 6px;", components: [	
-								//{kind: enyo.Button, caption: "Derp"},
-								{content: "", name: "bookmarkTitle"},
-								{content: "", name: "bookmarkDescription", style: "font-size: 12px; text-align: left; color: #8A8A8A"}
-							]}
-						]}
+			{kind: enyo.PageHeader, style: "height: 75px;", className: "enyo-header-dark", components: [ 
+				{kind: enyo.Spacer},
+				{kind: enyo.RadioGroup, components: [
+					{name:"favoriteSubredditsButton", kind: enyo.radioButton, icon: "icons/iconset/fav-subreddits.png",className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: false, onclick: "showFavSubreddits", depressed: false},
+					{name:"allSubredditsButton",kind: enyo.radioButton, icon: "icons/iconset/all-subreddits.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: false, onclick: "showAllSubreddits", depressed: false},
+				]},
+				{kind: enyo.Spacer}
+			]},
+			{kind: enyo.FadeScroller, flex: 1, style: "width: 350px; background-color: #BABABA", components: [ 
+				{name: "bookmarkList",lazy: false, kind: enyo.VirtualList, tapHighlight: true, onSetupRow: "getBookmarkItems", components: [
+					{kind: enyo.Item,lazy: false, name: "bookmarkItem", layoutKind: enyo.VFlexLayout, tapHighlight: true, onclick: "selectedBookmark", components: [
+						//{kind: enyo.RowGroup,lazy: false, name: "commentRowGroup", style: "width: 95%; margin-right: 6px;", components: [	
+							{content: "", name: "bookmarkTitle"},
+							{content: "", name: "bookmarkDescription", style: "font-size: 12px; text-align: left; color: #8A8A8A"}
+						//]}
 					]}
-				
-		
+				]}
+			]},
+			{kind: enyo.Toolbar, pack: "center",  align: "center", components: [  
+				{kind: enyo.GrabButton, slidingHandler: true},      
+				{kind: enyo.toolButton, icon: "icons/iconset/back.png", name: "loadPrevSubredditsPageButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadPrevSubredditsPage"},
+				{kind: enyo.toolButton, icon: "icons/iconset/next.png", name: "loadNextSubredditsPageButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadNextSubredditsPage"}
+   
+			]}
 		]},
 
 
@@ -213,6 +224,14 @@ enyo.kind({
 		//Main
 		this.$.bookmarkButton.setCaption("");		
 		this.$.homeButton.setCaption("");
+		this.$.favoriteSubredditsButton.setCaption("");
+		this.$.allSubredditsButton.setCaption("");
+		this.$.loadPrevSubredditsPageButton.setCaption("");
+		this.$.loadNextSubredditsPageButton.setCaption("");
+		this.$.loadPrevSubredditsPageButton.setIcon("icons/iconset/back.png");
+		this.$.loadNextSubredditsPageButton.setIcon("icons/iconset/back.png");
+		this.$.favoriteSubredditsButton.setIcon("icons/iconset/fav-subreddits.png");
+		this.$.allSubredditsButton.setIcon("icons/iconset/all-subreddits.png");		
 		this.$.bookmarkButton.setIcon("icons/iconset/bookmarks.png");
 		this.$.homeButton.setIcon("icons/iconset/home.png");
 		
@@ -220,6 +239,9 @@ enyo.kind({
 		this.$.LeftPane.$.newPostButton.setIcon("icons/iconset/new-card.png");
 		this.$.LeftPane.$.refreshButton.setIcon("icons/iconset/refresh.png");
 		this.$.LeftPane.$.loadMoreButton.setIcon("icons/iconset/next.png");
+
+
+
 		this.$.LeftPane.$.newPostButton.setCaption("");
 		this.$.LeftPane.$.refreshButton.setCaption("");
 		this.$.LeftPane.$.loadMoreButton.setCaption("");
@@ -245,6 +267,14 @@ enyo.kind({
 		//Main
 		this.$.bookmarkButton.setIcon("");
 		this.$.homeButton.setIcon("");
+		this.$.favoriteSubredditsButton.setIcon("");
+		this.$.allSubredditsButton.setIcon("");	
+		this.$.loadPrevSubredditsPageButton.setCaption("Previous");
+		this.$.loadNextSubredditsPageButton.setCaption("Next");
+		this.$.loadPrevSubredditsPageButton.setIcon("");
+		this.$.loadNextSubredditsPageButton.setIcon("");
+		this.$.favoriteSubredditsButton.setCaption("Favs");
+		this.$.allSubredditsButton.setCaption("All");
 		this.$.bookmarkButton.setCaption("Bookmarks");
 		this.$.homeButton.setCaption("Home");
 
@@ -361,7 +391,11 @@ enyo.kind({
 		//Finish inheritence from our parent kind
 		this.inherited(arguments);
 		
+		//Bookmark related variables
 		this.bookmarkArray = [];
+		this.bookmarkNextPage = null;
+		this.bookmarkPrevPage = null;
+		this.bookmarkDepth = 0;
 
 		this.prefsStruct = {
 			savedLogin: false,
@@ -627,6 +661,9 @@ enyo.kind({
 	},
 	
 	goHome: function() {
+		//Home button was pressed
+		//Return to the user's Reddit frontpage
+		
 		this.showHeaderSpinner();
 		this.currentSubreddit = "";
 		this.$.LeftPane.setCurrentSubreddit("");
@@ -635,47 +672,145 @@ enyo.kind({
 		
 
 	},
-	
+// End one-off functions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Begin Bookmark functions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	openBookmarks: function() {
-		
+		//Called when the bookmarks button gets pressed
+		//Tell the bookmarks webservice to go off and get subreddits
 		this.$.getBookmarks.call()
-		
 	},
 	
 	getBookmarksSuccess: function(inSender, inResponse) {
-		
-		this.bookmarkArray = inResponse.data.children;
-		
+		//Bookmarks returned successful; we now have a list of subreddits
 
+		//Put the bookmarks into an array. Put the previous and next names into variables so we can naviagte through the reddits
+		this.bookmarkArray = inResponse.data.children;
+		this.bookmarkNextPage = inResponse.data.after;
+		this.bookmarkPrevPage = inResponse.data.before;
+
+		enyo.log(this.$.getBookmarks.getUrl());
+		enyo.log("DEBUG: next in object " + inResponse.data.after);
+		enyo.log("DEBUG: prev in object " + inResponse.data.before);		
+		enyo.log("DEBUG: next " + this.bookmarkNextPage);
+		enyo.log("DEBUG: prev " + this.bookmarkPrevPage);
 		
+		//Make the next and previous buttons active if appropriate
+		if ( this.bookmarkNextPage == null ) { this.$.loadNextSubredditsPageButton.setDisabled(true); } else { this.$.loadNextSubredditsPageButton.setDisabled(false); };
+		if ( this.bookmarkPrevPage == null ) { this.$.loadPrevSubredditsPageButton.setDisabled(true); } else { this.$.loadPrevSubredditsPageButton.setDisabled(false); };
 		
+		//Open the pane with the subreddit bookmark UI
 		this.$.toaster.open();		
-		
-		
+
+		//Load and refresh the bookmarkList UI
 		this.$.bookmarkList.refresh();
+		this.$.bookmarkList.punt();
 		
 		
 	},
 	
 	getBookmarkItems: function(inSender, inIndex) {
+		//Display the list of subreddits
 		
-		
+		//Set the current row to the index of the row we're displaying
 		var currentRow = this.bookmarkArray[inIndex];
 		
-		
+		//If there's a row in the bookmark array that corrosponds to our current position in the list play ball
 		if ( currentRow ) {
 			
-			
+			//Draw the UI and get out of dodge
 			this.$.bookmarkTitle.setContent(currentRow.data.title);
-			this.$.bookmarkDescription.setContent(currentRow.data.description);
-			
+			this.$.bookmarkDescription.setContent(this.textCutterUpper(currentRow.data.description));
 			return true;
-			
 		}
+	},
+	
+	textCutterUpper: function(inSomeString) {
+		//Truncates (and adds elipses, or elipsises, or whatever, to) text greater than 70 chars long 
+		var returnText = "";
+		if ( inSomeString.length > 50) {
+			returnText = inSomeString.substring(0,50) + "...";
+		} else {
+			returnText = inSomeString;
+		}
+		return returnText;
+	},
+	
+	showFavSubreddits: function() {
+		//Show the user's subreddits
+		this.bookmarkDepth = 0;
+		this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/mine.json");
+		this.$.getBookmarks.call();
+	},
+	
+	showAllSubreddits: function()  {
+		//Show all subreddits
+		this.bookmarkDepth = 0;
+		this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/.json");
+		this.$.getBookmarks.call();
+	},
+
+	loadNextSubredditsPage: function() {
+		//There are more subreddits than Reddit will send in one request
+		//This allows us to "go forward a page" in the list of subreddits
+		
+		this.bookmarkDepth = this.bookmarkDepth + 1;
+		var currentURL = this.$.getBookmarks.getUrl();
+		
+		//We use the current URL of the webservice to determine if we are working with all subreddits or user favorite subreddits
+		//so that we can set the next URL appropriately
+		if ( currentURL.search("mine") == -1) {			
+			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/.json?count="+this.bookmarkDepth+"00&after="+this.bookmarkNextPage)
+			this.$.bookmarkList.punt();
+			this.$.getBookmarks.call();
+			
+		} else {			
+			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/mine.json?count="+this.bookmarkDepth+"00&before="+this.bookmarkNextPage);
+			this.$.bookmarkList.punt();
+			this.$.getBookmarks.call()	;		
+		};
+	},
+
+	loadPrevSubredditsPage: function() {
+		//There are more subreddits than Reddit will send in one request
+		//This allows us to "go back a page" in the list of subreddits
+
+		this.bookmarkDepth = this.bookmarkDepth - 1;
+		var currentURL = this.$.getBookmarks.getUrl();
+
+		//We use the current URL of the webservice to determine if we are working with all subreddits or user favorite subreddits
+		//so that we can set the next URL appropriately
+		if ( currentURL.search("mine") == -1) {
+			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/.json?count="+this.bookmarkDepth+"00&before="+this.bookmarkPrevPage)
+			this.$.bookmarkList.punt();
+			this.$.getBookmarks.call();
+			
+		} else {
+			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/mine.json?count="+this.bookmarkDepth+"00&before="+this.bookmarkPrevPage);
+			this.$.bookmarkList.punt();
+			this.$.getBookmarks.call()	;		
+		};		
+	},
+	
+	selectedBookmark: function(inSender, inRow) {
+		enyo.log("DEBUG: Entered selectedBookmark");
+		
+		//We've clicked on a subreddit.
+		//Set the text in the bar, load it, and close the toaster
+		
+		var selectedSubreddit = this.bookmarkArray[inRow.rowIndex].data.display_name;
+		
+		this.$.headerInputBox.setValue(selectedSubreddit);
+		this.subredditSubmit();
+		this.$.toaster.close();
 		
 	}
 	
-		
-// End one-off functions
+// End Bookmark functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+
 });

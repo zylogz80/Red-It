@@ -126,7 +126,7 @@ enyo.kind({
 
 		//This variable is populated with a pointer to an item in the list when it is selected
 		//we do this so that when the user selects another story we can change the background color of the old story back to normal
-		this.selectedRow = false;
+		this.selectedRow = "notActive";
 		// Call the function to get the stories
 		this.$.getStories.call();
 	},
@@ -318,7 +318,7 @@ enyo.kind({
 		if (count) {
 			// If the story has a thumbnail then display it
 			
-			if (inIndex == this.selectedRow) {
+			if (inIndex == this.selectedRow && this.selectedRow != "notActive") {
 				this.$.itemEntry.setStyle("background-color: #CFE6FF;");
 			} else {
 				this.$.itemEntry.setStyle("background-color: null;");

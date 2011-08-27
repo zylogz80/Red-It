@@ -56,8 +56,8 @@ enyo.kind({
 			{kind:enyo.TabButton, name: "headerCommentsTab", caption: "View Comments",  disabled: "true", onclick: "showComments"}
 		]},
 
-		{kind: enyo.Pane, name: "paneControl", flex: 1, components: [
-			{kind: enyo.WebView, name: "webViewer", onLoadComplete: "doCompleteDataLoad", url: "http://linkedlistcorruption.com/redit/welcome.html"},
+		{kind: enyo.Pane, style: "background-color: black", name: "paneControl", flex: 1, components: [
+			{kind: enyo.WebView, style: "background-color: black", name: "webViewer", onLoadComplete: "doCompleteDataLoad", url: "http://linkedlistcorruption.com/redit/welcome-2.html"},
 			
 			{kind: "readIT.commentView", name: "commentView", onLoginError: "doLoginError"},
 			

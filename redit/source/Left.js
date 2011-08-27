@@ -159,7 +159,7 @@ enyo.kind({
 	},
 
 	refreshStoryList: function() {
-		this.selectedRow = false;
+		this.selectedRow = "notActive";
 		this.$.getStories.call();
 		
 	},

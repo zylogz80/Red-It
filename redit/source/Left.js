@@ -318,7 +318,7 @@ enyo.kind({
 		if (count) {
 			// If the story has a thumbnail then display it
 			
-			if (inIndex == this.selectedRow && this.selectedRow != false) {
+			if (inIndex == this.selectedRow) {
 				this.$.itemEntry.setStyle("background-color: #CFE6FF;");
 			} else {
 				this.$.itemEntry.setStyle("background-color: null;");

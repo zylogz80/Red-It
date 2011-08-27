@@ -85,9 +85,18 @@ enyo.kind({
 				{kind: enyo.RadioGroup, components: [
 					{name:"favoriteSubredditsButton", kind: enyo.radioButton, icon: "icons/iconset/fav-subreddits.png",className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: false, onclick: "showFavSubreddits", depressed: false},
 					{name:"allSubredditsButton",kind: enyo.radioButton, icon: "icons/iconset/all-subreddits.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: false, onclick: "showAllSubreddits", depressed: false},
+					{name:"searchSubredditsButton",kind: enyo.radioButton, icon: "icons/iconset/topbar-search-icon.png", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: false, onclick: "showSearchBar", depressed: false},
+
 				]},
 				{kind: enyo.Spacer}
 			]},
+			{kind: enyo.Toolbar, name: "searchBar", showing: false, align: "center", pack: "center", components: [
+				{kind: enyo.ToolInput, selectAllOnFocus: "true", name: "subredditSearchBox", hint: "Subreddit search", onkeypress: "trapSearchEnterKey"},
+				{kind: enyo.ToolButton, icon: "icons/iconset/topbar-search-icon.png", onclick: "searchSubreddits"}
+
+			]},
+	
+	
 			{kind: enyo.FadeScroller, flex: 1, style: "width: 350px; background-color: #BABABA", components: [ 
 				{name: "bookmarkList",lazy: false, kind: enyo.VirtualList, tapHighlight: true, onSetupRow: "getBookmarkItems", components: [
 					{kind: enyo.Item,lazy: false, name: "bookmarkItem", layoutKind: enyo.VFlexLayout, tapHighlight: true, onclick: "selectedBookmark", components: [
@@ -708,7 +717,12 @@ enyo.kind({
 	openBookmarks: function() {
 		//Called when the bookmarks button gets pressed
 		//Tell the bookmarks webservice to go off and get subreddits
-		this.$.getBookmarks.call()
+
+		this.$.favoriteSubredditsButton.setDepressed(true);
+		this.$.allSubredditsButton.setDepressed(false);
+		this.$.searchSubredditsButton.setDepressed(false);
+		
+		this.showFavSubreddits();
 	},
 	
 	getBookmarksSuccess: function(inSender, inResponse) {
@@ -728,6 +742,8 @@ enyo.kind({
 		//Make the next and previous buttons active if appropriate
 		if ( this.bookmarkNextPage == null ) { this.$.loadNextSubredditsPageButton.setDisabled(true); } else { this.$.loadNextSubredditsPageButton.setDisabled(false); };
 		if ( this.bookmarkPrevPage == null ) { this.$.loadPrevSubredditsPageButton.setDisabled(true); } else { this.$.loadPrevSubredditsPageButton.setDisabled(false); };
+		
+
 		
 		//Open the pane with the subreddit bookmark UI
 		this.$.toaster.open();		
@@ -768,13 +784,31 @@ enyo.kind({
 	
 	showFavSubreddits: function() {
 		//Show the user's subreddits
+		
+		this.$.loadPrevSubredditsPageButton.setShowing(true);
+		this.$.loadNextSubredditsPageButton.setShowing(true);
+		
+		this.$.favoriteSubredditsButton.setDepressed(true);
+		this.$.allSubredditsButton.setDepressed(false);
+		this.$.searchSubredditsButton.setDepressed(false);
+		
+		
+		this.$.searchBar.setShowing(false);
 		this.bookmarkDepth = 0;
 		this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/mine.json");
 		this.$.getBookmarks.call();
 	},
 	
 	showAllSubreddits: function()  {
+		
+		this.$.loadPrevSubredditsPageButton.setShowing(true);
+		this.$.loadNextSubredditsPageButton.setShowing(true);
+		
+		this.$.favoriteSubredditsButton.setDepressed(false);
+		this.$.allSubredditsButton.setDepressed(true);
+		this.$.searchSubredditsButton.setDepressed(false);
 		//Show all subreddits
+		this.$.searchBar.setShowing(false);
 		this.bookmarkDepth = 0;
 		this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/.json");
 		this.$.getBookmarks.call();
@@ -834,7 +868,41 @@ enyo.kind({
 		this.subredditSubmit();
 		this.$.toaster.close();
 		
-	}
+	},
+	
+	searchSubreddits: function() {
+		this.bookmarkDepth = 0;
+		this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/search.json?q="+this.$.subredditSearchBox.getValue());
+		this.$.getBookmarks.call();
+	},
+	
+	showSearchBar: function() {
+		this.$.loadPrevSubredditsPageButton.setShowing(false);
+		this.$.loadNextSubredditsPageButton.setShowing(false);
+		this.$.favoriteSubredditsButton.setDepressed(false);
+		this.$.allSubredditsButton.setDepressed(false);
+		this.$.searchSubredditsButton.setDepressed(true);
+		this.$.subredditSearchBox.setValue("");
+		this.bookmarkArray = [];
+		this.$.searchBar.setShowing(true);
+		this.$.bookmarkList.refresh();
+		
+	},
+	trapSearchEnterKey: function(inSender, inKeyCode) {
+		
+		if (inKeyCode.keyCode == 13) {
+
+			this.$.subredditSearchBox.forceBlur();
+
+
+			enyo.keyboard.setManualMode(true);
+			enyo.keyboard.hide();
+			enyo.keyboard.setManualMode(false);
+
+			this.searchSubreddits();
+		
+		};
+	},
 	
 // End Bookmark functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////

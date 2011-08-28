@@ -29,5 +29,6 @@ enyo.depends(
 	"source/notLoggedInPopup.js",
 	"source/selfPostView.js",
 	"source/appMenu.js",
+	"source/textParser.js",
 	"source/redditStyles.css"
 	);

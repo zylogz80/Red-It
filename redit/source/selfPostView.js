@@ -37,6 +37,9 @@ enyo.kind({
 			is_self: "" }
 	},
 	components: [
+	
+		{kind: "readit.MarkdownConverter", name: "markdownConverter"},
+	
 		{kind: enyo.Scroller, flex: 1, components: [
 			{kind: enyo.HFlexBox, align: "center", pack: "center", components: [
 				{kind: enyo.Spacer},
@@ -44,7 +47,7 @@ enyo.kind({
 				{kind: enyo.Spacer}
 			]},
 			{name: "title", kind: enyo.HtmlContent, style: "padding-left: 2em; padding-right: 2em;font-size: 16px; color: #252525", content: "Loading..."},
-			{name: "body", kind: enyo.HtmlContent, style: "padding-left: 2em; padding-right: 2em;padding-top: 1em;  font-size: 24px; color: #0A0A0A",content: "'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'"},
+			{name: "body", kind: enyo.HtmlContent, onLinkClick: "linkClicked",style: "padding-left: 2em; padding-right: 2em;padding-top: 1em;  font-size: 24px; color: #0A0A0A",content: "'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'"},
 			{kind: enyo.HFlexBox, align: "center", pack: "center", components: [
 				{kind: enyo.Spacer},
 				{name: "signature", kind: enyo.HtmlContent, style: "padding-right: 2em; font-size: 20px; color: #0A0A0A; padding-top: 1em;", content: "- Lucifer"} 
@@ -55,8 +58,20 @@ enyo.kind({
 			name: "getStory", 
 			onSuccess:"getStorySuccess", 
 			onFailure:"getStoryFail"
-		}
+		},
+		{name: "appManager", 		kind: "PalmService", 
+									service: "palm://com.palm.applicationManager/", 
+									method: "open", 
+		}	
 	],
+	
+	linkClicked: function(inSender, inUrl) {
+		var params = {
+			"url" : inUrl
+		};
+		this.$.appManager.call({"id": "com.palm.app.browser", "params":params});
+		
+	},
 	
 	create: function() {
 		this.inherited(arguments);
@@ -69,9 +84,10 @@ enyo.kind({
 		
 		storyObject = inResponse[0].data.children;
 
+
 		
 		this.$.title.setContent(storyObject[0].data.title);
-		this.$.body.setContent(storyObject[0].data.selftext);
+		this.$.body.setContent(this.$.markdownConverter.convertToHTML(storyObject[0].data.selftext));
 		this.$.signature.setContent("- " + storyObject[0].data.author);
 		
 		this.$.body.setShowing(true);

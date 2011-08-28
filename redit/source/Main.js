@@ -177,7 +177,7 @@ enyo.kind({
 				]},
 				{kind: enyo.HFlexBox,style: "width: 500px", align: "center", pack: "center",components: [
 
-					{kind: enyo.Input, style: "width: 500px",alwaysLooksFocused: true,name: "newPostStoryContent",hint: "Story URL"},
+					{kind: enyo.RichText, style: "width: 500px",alwaysLooksFocused: true,name: "newPostStoryContent",hint: "Story URL"},
 				]},
 				{kind: enyo.HFlexBox,style: "width: 500px", align: "center", pack: "center",components: [
 
@@ -195,7 +195,7 @@ enyo.kind({
 			//The new post dialog box
 			{kind: enyo.RowGroup, caption: "Submit a comment", components: [
 				{kind: enyo.HFlexBox,  style: "width: 500px",align: "center", pack: "center",components: [
-					{kind: enyo.Input, style: "width: 500px", alwaysLooksFocused: true,name: "commentInputBox",  hint: "Enter your comment"},
+					{kind: enyo.RichText, style: "width: 500px, height: 200px", alwaysLooksFocused: true,name: "commentInputBox",  hint: "Enter your comment"},
 				]},
 
 				{kind: enyo.HFlexBox, align: "center", pack: "center",components: [ 

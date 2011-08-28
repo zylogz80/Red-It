@@ -31,6 +31,9 @@ enyo.kind({
 		onLoginError: ""
 	},
 	components: [
+	
+		{kind: "readit.MarkdownConverter", name: "markdownConverter"},
+	
 		{kind: "Header", name: "commentsHeader", style: "width: 100%", components: [
 			{kind: enyo.Spinner, name: "loadingSpinner", showing: "true"},
 			{kind: enyo.VFlexBox, style: "width: 95%", components: [
@@ -54,7 +57,7 @@ enyo.kind({
 						
 							{kind: enyo.VFlexBox, components: [
 
-								{kind: enyo.HtmlContent, name: "commentText",style: "color: white;font-size: 14px"},
+								{kind: enyo.HtmlContent, name: "commentText",style: "color: white;font-size: 14px", onLinkClick: "linkClicked"},
 								{kind: enyo.HFlexBox, components: [
 									{name: "storyVoteStatus"},
 									{content: "&nbsp;"},
@@ -68,6 +71,11 @@ enyo.kind({
 			
 
 		]},
+		
+		{name: "appManager", 		kind: "PalmService", 
+									service: "palm://com.palm.applicationManager/", 
+									method: "open", 
+		},
 		
 
 
@@ -87,6 +95,14 @@ enyo.kind({
 
 
 	],
+
+	linkClicked: function(inSender, inUrl) {
+		var params = {
+			"url" : inUrl
+		};
+		this.$.appManager.call({"id": "com.palm.app.browser", "params":params});
+		
+	},
 
 //Begin Comment Vote Code	
 	commentUpVote: function(inSender, inIndex) {
@@ -325,7 +341,7 @@ enyo.kind({
 		if (count && this.noStory == false) {
 			var score = parseInt(count.data.ups) - parseInt(count.data.downs);
 			this.$.commentRowGroup.setCaption("Comment by: " + count.data.author + ", Score: " + score);
-			this.$.commentText.setContent(count.data.body);//count.data.body);
+			this.$.commentText.setContent(this.$.markdownConverter.convertToHTML(count.data.body));//count.data.body);
 			
 			if ( count.data.replies != "" ) {
 				

@@ -56,7 +56,7 @@ enyo.kind({
 			{kind:enyo.TabButton, name: "headerCommentsTab", caption: "View Comments",  disabled: "true", onclick: "showComments"}
 		]},
 
-		{kind: enyo.Pane, style: "background-color: black", name: "paneControl", flex: 1, components: [
+		{kind: enyo.Pane, name: "thePane", style: "background-color: black", name: "paneControl", flex: 1, components: [
 			{kind: enyo.WebView, style: "background-color: black", name: "webViewer", onLoadComplete: "doCompleteDataLoad", url: "http://linkedlistcorruption.com/redit/welcome-2.html"},
 			
 			{kind: "readIT.commentView", name: "commentView", onLoginError: "doLoginError"},
@@ -195,6 +195,10 @@ enyo.kind({
 		// TODO: Load a default welcome page
 	},
 	acceptStoryFromLeftPane: function(inStoryStruct) {
+		
+		//this.$.thePane.setStyle("background-color: #373737");
+		this.$.webViewer.setStyle("background-color: #373737");
+		
 		// This function recieves the contents of a story struct
 		// from the left pane
 		this.storyStruct.url = inStoryStruct.url;

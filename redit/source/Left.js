@@ -63,7 +63,10 @@ enyo.kind({
 								{kind: enyo.HFlexBox, components: [
 									{name: "storySubreddit"},
 									{content: "&nbsp;"},
-									{name: "storyNumComments"}
+									{name: "storyNumComments"},
+									{name: "storyNSFWComma", showing: false, content: ","},
+									{content: "&nbsp;"},
+									{name: "storyNSFWStatus", content: "NSFW!", showing: false, style: "color: #FF9395"}
 								]}
 							]}
 							
@@ -327,6 +330,7 @@ enyo.kind({
 				this.$.itemEntry.setStyle("background-color: null;");
 			}
 			
+
 		
 			//Why Reddit? Why do I have to filter all these bogus images passed with relative paths? Why? IF THERE'S NOTHING THERE JUST FUCKING SEND NOTHING!
 			if ( count.data.thumbnail != "" &&  count.data.thumbnail != "/static/noimage.png" &&  count.data.thumbnail != "/static/self_default2.png") {
@@ -344,6 +348,16 @@ enyo.kind({
 			this.$.storyInfo.setContent("Score: "  + count.data.score + ", Submitter: " + count.data.author);
 			this.$.storySubreddit.setContent("Subreddit: " + count.data.subreddit + ",");
 			this.$.storyNumComments.setContent(count.data.num_comments + " comments");
+			this.$.storyNSFWComma.setShowing(false);
+			this.$.storyNSFWStatus.setShowing(false);
+			
+			if ( count.data.over_18 == true ) {
+				
+				this.$.itemEntry.setStyle("background-color: #ECE3E4;");
+				this.$.storyNSFWComma.setShowing(true);
+				this.$.storyNSFWStatus.setShowing(true);
+				
+			}
 			
 			if ( count.data.likes == true) {
 				// thing to do if upvoted

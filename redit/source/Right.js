@@ -87,7 +87,8 @@ enyo.kind({
 			{caption: "Email", onclick: "sendEmail"},
 			{caption: "Messaging", onclick: "sendMessage"},
 			{caption: "Copy URL", onclick: "copyMessage"},
-			{caption: "Twitter", onclick: "tweetMessage"}
+			{caption: "Twitter", onclick: "tweetMessage"},
+			{caption: "Open in Browser", onclick: "openStoryInBrowserCard"}
 		]},
 		{name: "emailService", 		kind: "PalmService", 
 									service: "palm://com.palm.applicationManager/", 
@@ -120,6 +121,15 @@ enyo.kind({
 		
 		//http://twitter.com/intent/tweet?text=TEXT_HERE&url=http://example.com
 	},	
+	
+	openStoryInBrowserCard: function() {
+		
+		var params = {
+			"url" : this.storyStruct.url
+		};
+		this.$.appManager.call({"id": "com.palm.app.browser", "params":params});		
+		
+	},
 	
 	sendEmail : function(inSender, inResponse) {
 		var params =  {

@@ -722,11 +722,19 @@ enyo.kind({
 		//Called when the bookmarks button gets pressed
 		//Tell the bookmarks webservice to go off and get subreddits
 
-		this.$.favoriteSubredditsButton.setDepressed(true);
-		this.$.allSubredditsButton.setDepressed(false);
-		this.$.searchSubredditsButton.setDepressed(false);
-		
-		this.showFavSubreddits();
+		if (this.isLoggedIn == true) {
+			this.$.favoriteSubredditsButton.setDepressed(true);
+			this.$.favoriteSubredditsButton.setDisabled(false);
+			this.$.allSubredditsButton.setDepressed(false);
+			this.$.searchSubredditsButton.setDepressed(false);
+			this.showFavSubreddits();
+		} else {
+			this.$.favoriteSubredditsButton.setDepressed(false);
+			this.$.favoriteSubredditsButton.setDisabled(true);
+			this.$.allSubredditsButton.setDepressed(true);
+			this.$.searchSubredditsButton.setDepressed(false);
+			this.showAllSubreddits();
+		}
 	},
 	
 	getBookmarksSuccess: function(inSender, inResponse) {

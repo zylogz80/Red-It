@@ -6,5 +6,6 @@
 	"main": "index.html",
 	"title": "Red It",
 	"icon": "icons/red-it-nobg-64.png",
-	"uiRevision": 2
+	"uiRevision": 2,
+	"noDeprecatedStyles": "true" 
 }

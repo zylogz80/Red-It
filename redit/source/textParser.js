@@ -25,69 +25,27 @@ enyo.kind({
 
 
 	},
-	
-	convertToText: function(inText) {
-		//Convert input Reddit markup to plain text
-		
-		var outText = "";
-		
-		
-		
-		return outText;
-		
-	},
-	
+
 	convertToHTML: function(inText) {
-		//Convert input Reddit markup  to HTML
+						
+		//Parse <
+		inText = inText.replace(/&lt;/g, "<");
 		
-		var outHTML = "";
+		//Parse >
+		inText = inText.replace(/&gt;/g, ">");
 		
-		this.parseLinks(inText);
+		//inText.replace(/&gt;&lt;/g, "<br>");
 		
-		outHTML = this.parseLinks(inText);
+		//Parse &
+		inText = inText.replace(/&amp;/g, "&");
 		
-		return outHTML;
+		//Remove <!--SC_OFF-->
+		inText = inText.replace(/<!--SC_OFF-->/g, "");
+		
+		return inText;
+		
+		
 		
 	},
-
-	parseLinks: function(inText) {
-		while ( inText.indexOf("](") != -1 ) {
-			//Keep iterating as long as we find links
-
-			var indexOfLinkJoint = inText.indexOf("](");
-			var indexOfLinkTitleStart = indexOfLinkJoint;
-			var indexOfLinkTitleEnd = indexOfLinkJoint;
-			var indexOfLinkAddyStart = indexOfLinkJoint + 2;
-			var indexOfLinkAddyEnd = indexOfLinkJoint;
-			
-			while ( inText.charAt(indexOfLinkTitleStart) != "[" ) {
-				
-				indexOfLinkTitleStart--;
-				
-			}
-
-			indexOfLinkTitleStart++;
-
-			while ( inText.charAt(indexOfLinkAddyEnd) != ")" ) {
-				
-				indexOfLinkAddyEnd++;
-				
-			}			
-	
-			var linkTitle = inText.slice(indexOfLinkTitleStart,indexOfLinkTitleEnd);
-			var linkAddy = inText.slice(indexOfLinkAddyStart, indexOfLinkAddyEnd);
-			
-			var linkHTML = "<a href='"+linkAddy+"'>"+linkTitle+"</a>";
-			
-			var beforeLink = inText.substr(0, indexOfLinkTitleStart - 1);
-			var afterLink = inText.substr(indexOfLinkAddyEnd + 1);
-			
-			var result = beforeLink + " " + linkHTML + " " + afterLink;
-			
-			inText = result;
-		};
-		return inText;
-	}
-
 	
 })

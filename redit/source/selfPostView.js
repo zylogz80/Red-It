@@ -87,7 +87,7 @@ enyo.kind({
 
 		
 		this.$.title.setContent(storyObject[0].data.title);
-		this.$.body.setContent(this.$.markdownConverter.convertToHTML(storyObject[0].data.selftext));
+		this.$.body.setContent(this.$.markdownConverter.convertToHTML(storyObject[0].data.selftext_html));
 		this.$.signature.setContent("- " + storyObject[0].data.author);
 		
 		this.$.body.setShowing(true);

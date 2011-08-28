@@ -341,7 +341,7 @@ enyo.kind({
 		if (count && this.noStory == false) {
 			var score = parseInt(count.data.ups) - parseInt(count.data.downs);
 			this.$.commentRowGroup.setCaption("Comment by: " + count.data.author + ", Score: " + score);
-			this.$.commentText.setContent(this.$.markdownConverter.convertToHTML(count.data.body));//count.data.body);
+			this.$.commentText.setContent(this.$.markdownConverter.convertToHTML(count.data.body_html));//count.data.body);
 			
 			if ( count.data.replies != "" ) {
 				

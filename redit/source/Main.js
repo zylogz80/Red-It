@@ -588,7 +588,6 @@ enyo.kind({
 			
 		}
 		
-		
 		this.$.spinScrim.hide(); // hide the scrim
 		this.isLoggedIn = true; 
 		this.$.RightPane.setIsLoggedIn(true);
@@ -596,6 +595,9 @@ enyo.kind({
 		this.$.LeftPane.setIsLoggedIn(true);
 		this.$.LeftPane.setUserModHash(this.userStruct.modHash);
 		this.$.LeftPane.$.newPostButton.setDisabled(false);
+		
+		//Refresh left pane
+		this.$.LeftPane.$.getStories.call();
 	},
 	openLoginPopup: function() {
 		//Open the login popup and show the scrim

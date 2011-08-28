@@ -40,7 +40,7 @@ enyo.kind({
 	
 		{kind: "readit.MarkdownConverter", name: "markdownConverter"},
 	
-		{kind: enyo.Scroller, flex: 1, components: [
+		{kind: enyo.Scroller, name: "scroller", autoHorizontal: false, horizontal: false, flex: 1, components: [
 			{kind: enyo.HFlexBox, align: "center", pack: "center", components: [
 				{kind: enyo.Spacer},
 				{kind: enyo.Image, pack: "center", align: "center", src: "graphics/reddit-seal.png"},
@@ -102,6 +102,7 @@ enyo.kind({
 		//Call the webservice on the URL for the story in the story struct
 		this.$.getStory.setUrl(this.storyStruct.url + ".json");
 		this.$.getStory.call();
+		this.$.scroller.scrollTo(0, 0);
 	}
 	
 })

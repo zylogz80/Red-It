@@ -250,12 +250,13 @@ enyo.kind({
 		this.$.LeftPane.$.newPostButton.setIcon("icons/iconset/new-card.png");
 		this.$.LeftPane.$.refreshButton.setIcon("icons/iconset/refresh.png");
 		this.$.LeftPane.$.loadMoreButton.setIcon("icons/iconset/next.png");
-
-
+		this.$.LeftPane.$.loadPrevButton.setIcon("icons/iconset/back.png");
 
 		this.$.LeftPane.$.newPostButton.setCaption("");
 		this.$.LeftPane.$.refreshButton.setCaption("");
 		this.$.LeftPane.$.loadMoreButton.setCaption("");
+		this.$.LeftPane.$.loadPrevButton.setCaption("");
+
 		
 		//Right
 		this.$.RightPane.$.footerUpButton.setIcon("icons/iconset/upboat.png");
@@ -295,9 +296,12 @@ enyo.kind({
 		this.$.LeftPane.$.newPostButton.setIcon("");
 		this.$.LeftPane.$.refreshButton.setIcon("");
 		this.$.LeftPane.$.loadMoreButton.setIcon("");
+		this.$.LeftPane.$.loadPrevButton.setIcon("");
+
 		this.$.LeftPane.$.newPostButton.setCaption("New Post");
 		this.$.LeftPane.$.refreshButton.setCaption("Refresh");
-		this.$.LeftPane.$.loadMoreButton.setCaption("Next Page");
+		this.$.LeftPane.$.loadMoreButton.setCaption("Next");
+		this.$.LeftPane.$.loadPrevButton.setCaption("Back");
 		
 		//Right
 		this.$.RightPane.$.footerUpButton.setIcon("");

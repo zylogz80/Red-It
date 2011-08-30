@@ -144,45 +144,49 @@ enyo.kind({
 	
 	loadPrev: function() {
 		
+		this.doStartDataLoad();
+		
 		if ( this.storyPageDepth > 1 ) {
 			
 			this.storyPageDepth = this.storyPageDepth - 1;
 			
 			if (this.currentSubreddit == "") {
 				//Code to grab more stories for front page
-				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]); };
-				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json?after="+this.previousStoryArray[this.storyPageDepth]); };
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerNewTab.setCaption("Newest Stories, +"+this.storyPageDepth);};
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json?after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerTopTab.setCaption("Hot Stories, +"+this.storyPageDepth); };
 			}
 		
 			//Fetch more in a subreddit
 			//http://www.reddit.com/r/Palm/.json?count=100&after=t3_gta2x
 			if (this.currentSubreddit != "") {
 				//Code to grab more stories for subreddit
-				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]); };
-				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json?after="+this.previousStoryArray[this.storyPageDepth]); };
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]) ; this.$.headerNewTab.setCaption("Newest Stories"); };
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json?after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerTopTab.setCaption("Hot Stories"); };
 			}			
 		}
 
 		if ( this.storyPageDepth == 1 ) {
 			
-			this.$.loadPrevButton.setDisabled(true);
+			this.storyPageDepth = this.storyPageDepth - 1;
 			
 			if (this.currentSubreddit == "") {
 				//Code to grab more stories for front page
-				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new"); };
-				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json"); };
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new"); this.$.headerNewTab.setCaption("Newest Stories");};
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json"); this.$.headerTopTab.setCaption("Hot Stories");};
 			}
 		
 			//Fetch more in a subreddit
 			//http://www.reddit.com/r/Palm/.json?count=100&after=t3_gta2x
 			if (this.currentSubreddit != "") {
 				//Code to grab more stories for subreddit
-				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new"); };
-				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json"); };
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new"); this.$.headerNewTab.setCaption("Newest Stories");};
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json"); this.$.headerTopTab.setCaption("Hot Stories");};
 			}				
 			
 		}
 		
+		this.$.loadPrevButton.setDisabled(true);
+		this.$.loadMoreButton.setDisabled(true);
 		this.refreshStoryList();
 		this.$.uiList.punt();
 		
@@ -190,6 +194,8 @@ enyo.kind({
 	},
 
 	loadMore: function() {
+		
+		this.doStartDataLoad();
 		//This function gets called when the user taps the "Load More" button
 		//This function goes out and gets more stories in the subreddit
 		//Apparantly not everyone has Reddit set to send 100 stories per page :P N00Bs
@@ -205,8 +211,8 @@ enyo.kind({
 		//http://www.reddit.com/.json?count=100&after=t3_jt3us
 		if (this.currentSubreddit == "") {
 			//Code to grab more stories for front page
-			if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new&after="+this.moreStoriesID); };
-			if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json?after="+this.moreStoriesID); };
+			if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new&after="+this.moreStoriesID); this.$.headerNewTab.setCaption("Newest Stories, +"+this.storyPageDepth); };
+			if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json?after="+this.moreStoriesID); this.$.headerTopTab.setCaption("Hot Stories, +"+this.storyPageDepth);};
 
 		}
 		
@@ -214,10 +220,12 @@ enyo.kind({
 		//http://www.reddit.com/r/Palm/.json?count=100&after=t3_gta2x
 		if (this.currentSubreddit != "") {
 			//Code to grab more stories for subreddit
-			if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new&after="+this.moreStoriesID); };
-			if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json?after="+this.moreStoriesID); };
+			if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new&after="+this.moreStoriesID); this.$.headerNewTab.setCaption("Newest Stories, +"+this.storyPageDepth);};
+			if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json?after="+this.moreStoriesID); this.$.headerTopTab.setCaption("Hot Stories, +"+this.storyPageDepth);};
 		}
 		
+		this.$.loadPrevButton.setDisabled(true);
+		this.$.loadMoreButton.setDisabled(true);
 		this.refreshStoryList();
 		this.$.uiList.punt();
 		
@@ -240,8 +248,11 @@ enyo.kind({
 		this.$.uiList.punt();
 		this.$.headerNewTab.setDepressed(false);
 		this.$.headerTopTab.setDepressed(true);
-		
-
+		this.$.headerTopTab.setCaption("Hot Stories");
+		this.$.headerNewTab.setCaption("New Stories");
+		this.$.loadPrevButton.setDisabled(true);
+		this.$.loadMoreButton.setDisabled(true);
+		this.storyPageDepth = 0;
 
 	},
 	selectNewStories: function() {
@@ -255,7 +266,11 @@ enyo.kind({
 		this.$.uiList.punt();
 		this.$.headerTopTab.setDepressed(false);
 		this.$.headerNewTab.setDepressed(true);
-
+		this.$.headerNewTab.setCaption("New Stories");
+		this.$.headerTopTab.setCaption("Hot Stories");
+		this.$.loadPrevButton.setDisabled(true);
+		this.$.loadMoreButton.setDisabled(true);
+		this.storyPageDepth = 0;
 	},
 	
 	refreshList: function() {
@@ -274,6 +289,8 @@ enyo.kind({
 	
 	getStoriesSuccess: function(inSender, inResponse) {
 		// Put the stories into an array
+		this.arrayOfStories = null;
+		this.arrayOfStories = [];
 		this.arrayOfStories = inResponse.data.children;
 		
 		// Get the "after" ID. This is what we need to go after to fetch more stories
@@ -297,6 +314,10 @@ enyo.kind({
 		//This event gets fired so that the main pane can stop the loading spinner
 		//when we're loading a new subreddit. It's not trapped otherwise.
 		this.doCompleteDataLoad();
+		
+		if ( this.storyPageDepth > 0 ) { this.$.loadPrevButton.setDisabled(false); } 
+		
+		this.$.loadMoreButton.setDisabled(false);
 	},
 	getStoriesFail: function(){
 		// Getting the stories failed for some reason
@@ -368,6 +389,7 @@ enyo.kind({
 	setCurrentSubreddit: function(inSubreddit) {
 		//Set the current subreddit and refresh the story list with hot stories in that subreddit
 		this.selectedRow = "notActive";
+		this.storyPageDepth = 0;
 		this.currentSubreddit = inSubreddit;
 		this.selectHotStories();
 	},
@@ -391,19 +413,17 @@ enyo.kind({
 				this.$.itemEntry.setStyle("background-color: null;");
 			}
 			
-
+			this.$.storyImage.setShowing(false);
 		
 			//Why Reddit? Why do I have to filter all these bogus images passed with relative paths? Why? IF THERE'S NOTHING THERE JUST FUCKING SEND NOTHING!
 			if ( count.data.thumbnail != "" &&  count.data.thumbnail != "/static/noimage.png" &&  count.data.thumbnail != "/static/self_default2.png") {
 				this.$.storyDescription.setStyle("width: 320px");
 				this.$.storyImage.setShowing(true);
 				this.$.storyImage.setSrc(count.data.thumbnail);
+				this.$.storyImage.setShowing(true);
 
 			}
-			if ( count.data.thumbnail == "" || count.data.thumbnail == "/static/noimage.png" || count.data.thumbnail == "static/self_default2.png") {
-				this.$.storyImage.setShowing(false);
 
-			}
 			
 			this.$.storyDescription.setContent(count.data.title);
 			this.$.storyInfo.setContent("Score: "  + count.data.score + ", Submitter: " + count.data.author);

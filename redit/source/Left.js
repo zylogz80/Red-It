@@ -83,6 +83,7 @@ enyo.kind({
 		{kind: enyo.Toolbar, pack: "center",  align: "center",components: [             
 			//Bottom Tool bar
 //		    {kind: "ToolButtonGroup", components: [
+				{kind: enyo.toolButton, icon: "icons/iconset/back.png", name: "loadPrevButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadPrev"},
 				{kind: enyo.toolButton, icon: "icons/iconset/new-card.png", name: "newPostButton", disabled: "true", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "doNewPostPressed"},
 				{kind: enyo.toolButton, icon: "icons/iconset/refresh.png", name: "refreshButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark",onclick: "refreshList"},
 				{kind: enyo.toolButton, icon: "icons/iconset/next.png", name: "loadMoreButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadMore"}
@@ -128,17 +129,77 @@ enyo.kind({
 		this.moreStoriesID = "";
 		this.currentTab = "hot";
 
+		//These two variables are for moving the through the page stack
+		//We get a page of stories at a time
+		//Moving forward and backward act on these variables
+		this.storyPageDepth = 0;
+		this.previousStoryArray = [];
+
 		//This variable is populated with a pointer to an item in the list when it is selected
 		//we do this so that when the user selects another story we can change the background color of the old story back to normal
 		this.selectedRow = "notActive";
 		// Call the function to get the stories
 		this.$.getStories.call();
 	},
+	
+	loadPrev: function() {
+		
+		if ( this.storyPageDepth > 1 ) {
+			
+			this.storyPageDepth = this.storyPageDepth - 1;
+			
+			if (this.currentSubreddit == "") {
+				//Code to grab more stories for front page
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]); };
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json?after="+this.previousStoryArray[this.storyPageDepth]); };
+			}
+		
+			//Fetch more in a subreddit
+			//http://www.reddit.com/r/Palm/.json?count=100&after=t3_gta2x
+			if (this.currentSubreddit != "") {
+				//Code to grab more stories for subreddit
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]); };
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json?after="+this.previousStoryArray[this.storyPageDepth]); };
+			}			
+		}
+
+		if ( this.storyPageDepth == 1 ) {
+			
+			this.$.loadPrevButton.setDisabled(true);
+			
+			if (this.currentSubreddit == "") {
+				//Code to grab more stories for front page
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new"); };
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json"); };
+			}
+		
+			//Fetch more in a subreddit
+			//http://www.reddit.com/r/Palm/.json?count=100&after=t3_gta2x
+			if (this.currentSubreddit != "") {
+				//Code to grab more stories for subreddit
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new"); };
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json"); };
+			}				
+			
+		}
+		
+		this.refreshStoryList();
+		this.$.uiList.punt();
+		
+		
+	},
 
 	loadMore: function() {
 		//This function gets called when the user taps the "Load More" button
 		//This function goes out and gets more stories in the subreddit
 		//Apparantly not everyone has Reddit set to send 100 stories per page :P N00Bs
+		
+		this.$.loadPrevButton.setDisabled(false);
+		
+		//Set a couple of variables to make the back button work.
+		
+		this.storyPageDepth = this.storyPageDepth + 1;
+		this.previousStoryArray[this.storyPageDepth] = this.moreStoriesID;
 		
 		//Fetch more on front page
 		//http://www.reddit.com/.json?count=100&after=t3_jt3us

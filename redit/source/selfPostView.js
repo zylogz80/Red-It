@@ -84,10 +84,15 @@ enyo.kind({
 		
 		storyObject = inResponse[0].data.children;
 
-
 		
-		this.$.title.setContent(storyObject[0].data.title);
-		this.$.body.setContent(this.$.markdownConverter.convertToHTML(storyObject[0].data.selftext_html));
+		
+		if ( storyObject[0].data.selftext_html != null ) { 
+				this.$.title.setContent(storyObject[0].data.title);
+				this.$.body.setContent(this.$.markdownConverter.convertToHTML(storyObject[0].data.selftext_html));
+		} else {
+			this.$.body.setContent(storyObject[0].data.title);
+			this.$.title.setContent("");
+		}
 		this.$.signature.setContent("- " + storyObject[0].data.author);
 		
 		this.$.body.setShowing(true);

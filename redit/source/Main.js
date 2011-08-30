@@ -163,7 +163,7 @@ enyo.kind({
 			]}
 		]},
 		
-		{name: "newPostPopup", align: "center", kind: enyo.Popup, dismissWithClick: false, modal: true, components: [
+		{name: "newPostPopup", align: "center", lazy: false,kind: enyo.Popup, dismissWithClick: false, modal: true, components: [
 			//The new post dialog box
 			{kind: enyo.RowGroup, caption: "Submit a Story", components: [
 				{kind: enyo.HFlexBox, style: "width: 500px",align: "center", pack: "center",components: [
@@ -175,10 +175,10 @@ enyo.kind({
 				{kind: enyo.HFlexBox, style: "width: 500px",align: "center", pack: "center",components: [
 					{kind: enyo.Input, style: "width: 500px", alwaysLooksFocused: true,name: "newPostStoryTitle",  hint: "Story Title"},
 				]},
-				{kind: enyo.HFlexBox,style: "width: 500px", align: "center", pack: "center",components: [
-
-					{kind: enyo.RichText, style: "width: 500px",alwaysLooksFocused: true,name: "newPostStoryContent",hint: "Story URL"},
+				{kind: enyo.VFlexBox,style: "width: 500px;", align: "center", pack: "center",components: [
+						{kind: enyo.Input, style: "width: 500px", alwaysLooksFocused: true,name: "newPostStoryContent",hint: "Story URL"}
 				]},
+
 				{kind: enyo.HFlexBox,style: "width: 500px", align: "center", pack: "center",components: [
 
 					{kind: enyo.Input, style: "width: 500px",alwaysLooksFocused: true,name: "newPostStorySubreddit",hint: "Subreddit to submit to."},
@@ -195,7 +195,7 @@ enyo.kind({
 			//The new post dialog box
 			{kind: enyo.RowGroup, caption: "Submit a comment", components: [
 				{kind: enyo.HFlexBox,  style: "width: 500px",align: "center", pack: "center",components: [
-					{kind: enyo.RichText, style: "width: 500px, height: 200px", alwaysLooksFocused: true,name: "commentInputBox",  hint: "Enter your comment"},
+					{kind: enyo.Input, style: "width: 500px", alwaysLooksFocused: true, name: "commentInputBox",  hint: "Enter your comment"},
 				]},
 
 				{kind: enyo.HFlexBox, align: "center", pack: "center",components: [ 
@@ -469,7 +469,7 @@ enyo.kind({
 
 	newStoryStyleText: function() {
 		//Modify the submittion box to better visually suit text submission
-		this.$.newPostStoryContent.setStyle("width: 500px; height: 150px");
+		this.$.newPostStoryContent.setStyle("width: 500px");
 		this.$.newPostStoryContent.setHint("Story Text");
 		this.newPostType = "text";
 	
@@ -477,7 +477,7 @@ enyo.kind({
 
 	newStoryStyleLink: function() {
 		//Modify the submittion box to better visually suit link submission
-		this.$.newPostStoryContent.setStyle("width: 500px; height: 48px");
+		this.$.newPostStoryContent.setStyle("width: 500px");
 		this.$.newPostStoryContent.setHint("Story URL");
 		this.newPostType = "link";
 	},

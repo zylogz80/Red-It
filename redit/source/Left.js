@@ -142,9 +142,17 @@ enyo.kind({
 		this.$.getStories.call();
 	},
 	
+
+	
 	loadPrev: function() {
+		enyo.log("DEBUG: Back ---------------------------------------------");
+		enyo.log("DEBUG: Entering loadPrev " + this.storyPageDepth);
 		
 		this.doStartDataLoad();
+		
+		this.selectedRow = "notActive";
+		
+		this.$.errorScrim.show();
 		
 		if ( this.storyPageDepth == 1 ) {
 			
@@ -180,8 +188,8 @@ enyo.kind({
 			//http://www.reddit.com/r/Palm/.json?count=100&after=t3_gta2x
 			if (this.currentSubreddit != "") {
 				//Code to grab more stories for subreddit
-				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]) ; this.$.headerNewTab.setCaption("Newest Stories"); };
-				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json?after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerTopTab.setCaption("Hot Stories"); };
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]) ; this.$.headerNewTab.setCaption("Newest Stories, +"+this.storyPageDepth); };
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json?after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerTopTab.setCaption("Hot Stories, +"+this.storyPageDepth); };
 			}			
 		}
 
@@ -189,13 +197,22 @@ enyo.kind({
 		this.$.loadMoreButton.setDisabled(true);
 		this.refreshStoryList();
 		this.$.uiList.punt();
-		
+		enyo.log("DEBUG: Leaving loadPrev " + this.storyPageDepth);
 		
 	},
 
 	loadMore: function() {
+		enyo.log("DEBUG: Forward ---------------------------------------------");
+		
+		enyo.log("DEBUG: Entering loadMore " + this.storyPageDepth);
 		
 		this.doStartDataLoad();
+		
+		this.selectedRow = "notActive";
+		
+		this.$.errorScrim.show();
+		
+		
 		//This function gets called when the user taps the "Load More" button
 		//This function goes out and gets more stories in the subreddit
 		//Apparantly not everyone has Reddit set to send 100 stories per page :P N00Bs
@@ -229,6 +246,8 @@ enyo.kind({
 		this.refreshStoryList();
 		this.$.uiList.punt();
 		
+		enyo.log("DEBUG: Leaving loadMore " + this.storyPageDepth);
+		
 	},
 
 	refreshStoryList: function() {
@@ -238,6 +257,7 @@ enyo.kind({
 	},
 	
 	selectHotStories: function() {
+		this.$.errorScrim.show();
 		this.doStartDataLoad();
 		if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json");}
 		if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/.json");}
@@ -253,9 +273,11 @@ enyo.kind({
 		this.$.loadPrevButton.setDisabled(true);
 		this.$.loadMoreButton.setDisabled(true);
 		this.storyPageDepth = 0;
+		this.previousStoryArray = [];
 
 	},
 	selectNewStories: function() {
+		this.$.errorScrim.show();
 		this.doStartDataLoad();
 		if (this.currentSubreddit == "") {this.$.getStories.setUrl("http://reddit.com/new.json?sort=new");}
 		if (this.currentSubreddit != "") {this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new");}
@@ -271,6 +293,7 @@ enyo.kind({
 		this.$.loadPrevButton.setDisabled(true);
 		this.$.loadMoreButton.setDisabled(true);
 		this.storyPageDepth = 0;
+		this.previousStoryArray = [];
 	},
 	
 	refreshList: function() {
@@ -318,6 +341,7 @@ enyo.kind({
 		if ( this.storyPageDepth > 0 ) { this.$.loadPrevButton.setDisabled(false); } 
 		
 		this.$.loadMoreButton.setDisabled(false);
+		this.$.errorScrim.hide()
 	},
 	getStoriesFail: function(){
 		// Getting the stories failed for some reason
@@ -388,9 +412,11 @@ enyo.kind({
 
 	setCurrentSubreddit: function(inSubreddit) {
 		//Set the current subreddit and refresh the story list with hot stories in that subreddit
+		this.$.errorScrim.show();
 		this.selectedRow = "notActive";
 		this.storyPageDepth = 0;
 		this.currentSubreddit = inSubreddit;
+		this.previousStoryArray = [];
 		this.selectHotStories();
 	},
 

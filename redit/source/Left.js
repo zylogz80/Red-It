@@ -146,25 +146,6 @@ enyo.kind({
 		
 		this.doStartDataLoad();
 		
-		if ( this.storyPageDepth > 1 ) {
-			
-			this.storyPageDepth = this.storyPageDepth - 1;
-			
-			if (this.currentSubreddit == "") {
-				//Code to grab more stories for front page
-				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerNewTab.setCaption("Newest Stories, +"+this.storyPageDepth);};
-				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json?after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerTopTab.setCaption("Hot Stories, +"+this.storyPageDepth); };
-			}
-		
-			//Fetch more in a subreddit
-			//http://www.reddit.com/r/Palm/.json?count=100&after=t3_gta2x
-			if (this.currentSubreddit != "") {
-				//Code to grab more stories for subreddit
-				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]) ; this.$.headerNewTab.setCaption("Newest Stories"); };
-				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json?after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerTopTab.setCaption("Hot Stories"); };
-			}			
-		}
-
 		if ( this.storyPageDepth == 1 ) {
 			
 			this.storyPageDepth = this.storyPageDepth - 1;
@@ -185,6 +166,25 @@ enyo.kind({
 			
 		}
 		
+		if ( this.storyPageDepth > 1 ) {
+			
+			this.storyPageDepth = this.storyPageDepth - 1;
+			
+			if (this.currentSubreddit == "") {
+				//Code to grab more stories for front page
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for frontpage*/ this.$.getStories.setUrl("http://reddit.com/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerNewTab.setCaption("Newest Stories, +"+this.storyPageDepth);};
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for frontpage*/ this.$.getStories.setUrl("http://reddit.com/.json?after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerTopTab.setCaption("Hot Stories, +"+this.storyPageDepth); };
+			}
+		
+			//Fetch more in a subreddit
+			//http://www.reddit.com/r/Palm/.json?count=100&after=t3_gta2x
+			if (this.currentSubreddit != "") {
+				//Code to grab more stories for subreddit
+				if ( this.$.headerNewTab.getDepressed() == true) {/* Set URL to new for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+"/new.json?sort=new&after="+this.previousStoryArray[this.storyPageDepth]) ; this.$.headerNewTab.setCaption("Newest Stories"); };
+				if ( this.$.headerTopTab.getDepressed() == true) {/* Set URL to hot for subreddit*/ this.$.getStories.setUrl("http://reddit.com/r/"+this.currentSubreddit+".json?after="+this.previousStoryArray[this.storyPageDepth]); this.$.headerTopTab.setCaption("Hot Stories"); };
+			}			
+		}
+
 		this.$.loadPrevButton.setDisabled(true);
 		this.$.loadMoreButton.setDisabled(true);
 		this.refreshStoryList();

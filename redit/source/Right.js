@@ -57,7 +57,7 @@ enyo.kind({
 		]},
 
 		{kind: enyo.Pane, name: "thePane", style: "background-color: black", name: "paneControl", flex: 1, components: [
-			{kind: enyo.WebView, style: "background-color: black", name: "webViewer", onLoadComplete: "doCompleteDataLoad", url: "http://linkedlistcorruption.com/redit/welcome-2.html"},
+			{kind: enyo.WebView, style: "background-color: black", name: "webViewer", onLoadComplete: "doCompleteDataLoad", url: "http://www.linkedlistcorruption.com/redit/welcome-2.html"},
 			
 			{kind: "readIT.commentView", name: "commentView", onLoginError: "doLoginError"},
 			

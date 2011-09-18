@@ -109,7 +109,7 @@ enyo.kind({
 			]},
 			{kind: enyo.Toolbar, pack: "center",  align: "center", components: [  
 				{kind: enyo.GrabButton, slidingHandler: true},      
-				{kind: enyo.toolButton, icon: "icons/iconset/back.png", name: "loadPrevSubredditsPageButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadPrevSubredditsPage"},
+				//{kind: enyo.toolButton, icon: "icons/iconset/back.png", name: "loadPrevSubredditsPageButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadPrevSubredditsPage"},
 				{kind: enyo.toolButton, icon: "icons/iconset/next.png", name: "loadNextSubredditsPageButton", className: "enyo-grouped-toolbutton-dark enyo-radiobutton-dark", disabled: true, onclick: "loadNextSubredditsPage"}
    
 			]}
@@ -235,11 +235,11 @@ enyo.kind({
 		this.$.homeButton.setCaption("");
 		this.$.favoriteSubredditsButton.setCaption("");
 		this.$.allSubredditsButton.setCaption("");
-		this.$.loadPrevSubredditsPageButton.setCaption("");
+		//this.$.loadPrevSubredditsPageButton.setCaption("");
 		this.$.loadNextSubredditsPageButton.setCaption("");
 		this.$.searchSubredditsButton.setCaption("");
 		this.$.searchSubredditsButton.setIcon("icons/iconset/topbar-search-icon.png");
-		this.$.loadPrevSubredditsPageButton.setIcon("icons/iconset/back.png");
+		//this.$.loadPrevSubredditsPageButton.setIcon("icons/iconset/back.png");
 		this.$.loadNextSubredditsPageButton.setIcon("icons/iconset/next.png");
 		this.$.favoriteSubredditsButton.setIcon("icons/iconset/fav-subreddits.png");
 		this.$.allSubredditsButton.setIcon("icons/iconset/all-subreddits.png");		
@@ -281,11 +281,11 @@ enyo.kind({
 		this.$.homeButton.setIcon("");
 		this.$.favoriteSubredditsButton.setIcon("");
 		this.$.allSubredditsButton.setIcon("");	
-		this.$.loadPrevSubredditsPageButton.setCaption("Previous");
+		//this.$.loadPrevSubredditsPageButton.setCaption("Previous");
 		this.$.loadNextSubredditsPageButton.setCaption("Next");
 		this.$.searchSubredditsButton.setCaption("Search");
 		this.$.searchSubredditsButton.setIcon("");
-		this.$.loadPrevSubredditsPageButton.setIcon("");
+		//this.$.loadPrevSubredditsPageButton.setIcon("");
 		this.$.loadNextSubredditsPageButton.setIcon("");
 		this.$.favoriteSubredditsButton.setCaption("Favs");
 		this.$.allSubredditsButton.setCaption("All");
@@ -759,7 +759,7 @@ enyo.kind({
 		
 		//Make the next and previous buttons active if appropriate
 		if ( this.bookmarkNextPage == null ) { this.$.loadNextSubredditsPageButton.setDisabled(true); } else { this.$.loadNextSubredditsPageButton.setDisabled(false); };
-		if ( this.bookmarkPrevPage == null ) { this.$.loadPrevSubredditsPageButton.setDisabled(true); } else { this.$.loadPrevSubredditsPageButton.setDisabled(false); };
+		//if ( this.bookmarkPrevPage == null ) { this.$.loadPrevSubredditsPageButton.setDisabled(true); } else { this.$.loadPrevSubredditsPageButton.setDisabled(false); };
 		
 		//Open the pane with the subreddit bookmark UI
 		this.$.toaster.open();		
@@ -801,7 +801,7 @@ enyo.kind({
 	showFavSubreddits: function() {
 		//Show the user's subreddits
 		
-		this.$.loadPrevSubredditsPageButton.setShowing(true);
+		//this.$.loadPrevSubredditsPageButton.setShowing(true);
 		this.$.loadNextSubredditsPageButton.setShowing(true);
 		
 		this.$.favoriteSubredditsButton.setDepressed(true);
@@ -817,7 +817,7 @@ enyo.kind({
 	
 	showAllSubreddits: function()  {
 		
-		this.$.loadPrevSubredditsPageButton.setShowing(true);
+		//this.$.loadPrevSubredditsPageButton.setShowing(true);
 		this.$.loadNextSubredditsPageButton.setShowing(true);
 		
 		this.$.favoriteSubredditsButton.setDepressed(false);
@@ -835,6 +835,8 @@ enyo.kind({
 		//This allows us to "go forward a page" in the list of subreddits
 		
 		this.bookmarkDepth = this.bookmarkDepth + 1;
+		
+		
 		var currentURL = this.$.getBookmarks.getUrl();
 		
 		//We use the current URL of the webservice to determine if we are working with all subreddits or user favorite subreddits
@@ -856,20 +858,22 @@ enyo.kind({
 		//This allows us to "go back a page" in the list of subreddits
 
 		this.bookmarkDepth = this.bookmarkDepth - 1;
+		
+		
 		var currentURL = this.$.getBookmarks.getUrl();
 
 		//We use the current URL of the webservice to determine if we are working with all subreddits or user favorite subreddits
 		//so that we can set the next URL appropriately
-		if ( currentURL.search("mine") == -1) {
-			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/.json?&before="+this.bookmarkPrevPage)
+		if ( currentURL.search("mine") == -1) {			
+			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/.json?&after="+this.bookmarkNextPage)
 			this.$.bookmarkList.punt();
 			this.$.getBookmarks.call();
 			
-		} else {
-			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/mine.json?&before="+this.bookmarkPrevPage);
+		} else {			
+			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/mine.json?&after="+this.bookmarkNextPage);
 			this.$.bookmarkList.punt();
 			this.$.getBookmarks.call()	;		
-		};		
+		};
 	},
 	
 	selectedBookmark: function(inSender, inRow) {
@@ -893,7 +897,7 @@ enyo.kind({
 	},
 	
 	showSearchBar: function() {
-		this.$.loadPrevSubredditsPageButton.setShowing(false);
+		//this.$.loadPrevSubredditsPageButton.setShowing(false);
 		this.$.loadNextSubredditsPageButton.setShowing(false);
 		this.$.favoriteSubredditsButton.setDepressed(false);
 		this.$.allSubredditsButton.setDepressed(false);

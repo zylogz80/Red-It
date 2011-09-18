@@ -35,7 +35,6 @@ enyo.kind({
 		{caption: "About Red It", onclick: "showAbout"},
 		{caption: "Help", onclick: "showHelp"},
 		{caption: "Red It Code", onclick: "showCode"},
-		{caption: "Email the Developer", onclick: "showSupport"},
 		{caption: "Button Style", components: [
 			{caption: "Icons", onclick: "doSelectIconButtons"},
 			{caption: "Text", onclick: "doSelectTextButtons"}
@@ -70,19 +69,6 @@ enyo.kind({
 		this.$.appManager.call({"id": "com.palm.app.browser", "params":params});
 	},
 	
-	showSupport: function() {
-		var params =  {
-			 "recipients":[{
-				"type": "email",
-				"contactDisplay":"Red It Feedback",
-				"role":1,
-				"value":"reditfeedback@linkedlistcorruption.com"
-			}],		
-			"summary":"Red It Feedback",
-			"text": "Thank you for electing to send feedback about Red It! Whatever you've got to say, I'd like to hear it. Thanks in advance.<br><br>My Feedback<br>------------------------------------------------------------------<br><br><br><br>Do you give Red It's developer permission to contact you regarding your feedback?<br>------------------------------------------------------------------<br><br><br><br>"
-		};
-		this.$.appManager.call({"id": "com.palm.app.email", "params":params});
-	}
 
 	
 })

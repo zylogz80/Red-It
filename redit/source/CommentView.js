@@ -151,7 +151,7 @@ enyo.kind({
 		
 		this.getCommentsByPermaLink(this.permaLink+this.commentResults[inEvent.rowIndex].data.name.slice(3));
 		
-		//this.$.headerText.setContent(this.textCutterUpper(this.commentResults[inEvent.rowIndex].data.body));
+		this.$.headerText.setContent(this.textCutterUpper(this.commentResults[inEvent.rowIndex].data.body));
 		
 		this.$.commentList.punt();
 		

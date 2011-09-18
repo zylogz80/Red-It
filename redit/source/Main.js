@@ -761,8 +761,6 @@ enyo.kind({
 		if ( this.bookmarkNextPage == null ) { this.$.loadNextSubredditsPageButton.setDisabled(true); } else { this.$.loadNextSubredditsPageButton.setDisabled(false); };
 		if ( this.bookmarkPrevPage == null ) { this.$.loadPrevSubredditsPageButton.setDisabled(true); } else { this.$.loadPrevSubredditsPageButton.setDisabled(false); };
 		
-
-		
 		//Open the pane with the subreddit bookmark UI
 		this.$.toaster.open();		
 
@@ -842,12 +840,12 @@ enyo.kind({
 		//We use the current URL of the webservice to determine if we are working with all subreddits or user favorite subreddits
 		//so that we can set the next URL appropriately
 		if ( currentURL.search("mine") == -1) {			
-			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/.json?count="+this.bookmarkDepth+"00&after="+this.bookmarkNextPage)
+			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/.json?&after="+this.bookmarkNextPage)
 			this.$.bookmarkList.punt();
 			this.$.getBookmarks.call();
 			
 		} else {			
-			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/mine.json?count="+this.bookmarkDepth+"00&before="+this.bookmarkNextPage);
+			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/mine.json?&after="+this.bookmarkNextPage);
 			this.$.bookmarkList.punt();
 			this.$.getBookmarks.call()	;		
 		};
@@ -863,12 +861,12 @@ enyo.kind({
 		//We use the current URL of the webservice to determine if we are working with all subreddits or user favorite subreddits
 		//so that we can set the next URL appropriately
 		if ( currentURL.search("mine") == -1) {
-			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/.json?count="+this.bookmarkDepth+"00&before="+this.bookmarkPrevPage)
+			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/.json?&before="+this.bookmarkPrevPage)
 			this.$.bookmarkList.punt();
 			this.$.getBookmarks.call();
 			
 		} else {
-			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/mine.json?count="+this.bookmarkDepth+"00&before="+this.bookmarkPrevPage);
+			this.$.getBookmarks.setUrl("http://www.reddit.com/reddits/mine.json?&before="+this.bookmarkPrevPage);
 			this.$.bookmarkList.punt();
 			this.$.getBookmarks.call()	;		
 		};		

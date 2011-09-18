@@ -150,6 +150,8 @@ enyo.kind({
 		this.$.shareMenu.openAtControl(this.$.shareButton);
 	},
 	showStory: function(){
+		this.$.headerStoryTab.setDepressed(true);
+		this.$.headerCommentsTab.setDepressed(false);
 		this.$.footerUpButton.setShowing(true);
 		this.$.footerDownButton.setShowing(true);
 		this.$.shareButton.setShowing(true);
@@ -163,6 +165,8 @@ enyo.kind({
 		};
 	},
 	showComments: function() {
+		this.$.headerStoryTab.setDepressed(false);
+		this.$.headerCommentsTab.setDepressed(true);
 		this.$.footerUpButton.setShowing(false);
 		this.$.footerDownButton.setShowing(false);
 		this.$.shareButton.setShowing(false);
@@ -216,14 +220,18 @@ enyo.kind({
 		this.$.headerCommentsTab.setDisabled(false);
 		this.$.shareButton.setDisabled(false);
 		//this.$.commentButton.setDisabled(false);
+		if ( this.isLoggedIn == true ) {
+			this.$.footerUpButton.setDisabled(false);
 		this.$.backButton.setDisabled(false);
 
 
-		if ( this.isLoggedIn == true ) {
-			this.$.footerUpButton.setDisabled(false);
 			this.$.footerDownButton.setDisabled(false);
 			this.$.commentButton.setDisabled(false);
 		}
+
+
+		this.showStory();
+
 
 		//Update the visual representation of the story
 		this.updateStoryUI();
@@ -231,7 +239,6 @@ enyo.kind({
 		this.$.commentView.setCurrentCommentParent(this.storyStruct.id);
 		this.$.commentView.initCommentsForStory(this.storyStruct.permalink);
 		this.$.commentView.setUserModHash(this.userModHash);
-		
 
 
 	},

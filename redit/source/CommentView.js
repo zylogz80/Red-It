@@ -153,6 +153,7 @@ enyo.kind({
 		
 		this.$.headerText.setContent(this.textCutterUpper(this.commentResults[inEvent.rowIndex].data.body));
 		
+		
 		this.$.commentList.punt();
 		
 	},
@@ -304,7 +305,7 @@ enyo.kind({
 			tempObject = inResponse[1].data.children;
 			tempObject2 = tempObject[0].data.replies;		
 
-			this.$.headerText.setContent(tempObject[0].data.body);
+			this.$.headerText.setContent(this.textCutterUpper(tempObject[0].data.body));
 			
 			if ( tempObject2 ) {
 				commentObject = tempObject2.data.children;

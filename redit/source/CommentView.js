@@ -347,7 +347,7 @@ enyo.kind({
 			if ( count.data.replies != "" ) {
 				
 				this.$.commentReplyStatus.setStyle("color: #CACACA;font-size: 12px");
-				this.$.commentReplyStatus.setContent("This comment has replies. Tap to veiw them or to reply yourself!");
+				this.$.commentReplyStatus.setContent("This comment has replies. Tap to view them or to reply yourself!");
 				
 			} else {
 				
